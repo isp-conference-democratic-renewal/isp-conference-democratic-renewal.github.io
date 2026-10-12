@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Democratic Decline and Renewal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: a small conference site. Home (what and why), Schedule (the sky-backed time grid, every block a link), one page per session with speakers, and a speakers index. Hash routing, one file. */
+  :root {
+    --bg: #eef1f4;
+    --paper: #ffffff;
+    --ink: #1f2a36;
+    --muted: #5f6d7c;
+    --line: #cfd7df;
+    --day: #dde4ec;
+    --day2: #cbd5e0;
+    --plenary: #2f4a6b;
+    --plenary-ink: #ffffff;
+    --breakout: rgba(255,255,255,0.82);
+    --breakout-ink: #1f2a36;
+    --keynote: #f2d7a6;
+    --keynote-ink: #3a2a08;
+    --social: #cba8bc;
+    --social-ink: #2b1b2a;
+    --pause: rgba(255,255,255,0.45);
+    --pause-ink: #4b5866;
+    --accent: #2f4a6b;
+    --sky-9: #e6f0f8; --sky-12: #aed3f0; --sky-15: #c3d6ea; --sky-17: #f2d7a6; --sky-1830: #cba8bc; --sky-19: #4e5c86; --sky-20: #2f3a5c;
+    --display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+    --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    --row: 26px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
+      --day: #26313d; --day2: #2e3a48;
+      --plenary: #6f93bd; --plenary-ink: #0d1520;
+      --breakout: rgba(27,35,44,0.78); --breakout-ink: #e8edf2;
+      --keynote: #d7b36e; --keynote-ink: #1f1600;
+      --social: #a37f98; --social-ink: #1a0f18;
+      --pause: rgba(27,35,44,0.35); --pause-ink: #b7c2cd;
+      --accent: #9dbbe0;
+      --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d; --sky-19: #232a45; --sky-20: #181d33;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
+    --day: #26313d; --day2: #2e3a48;
+    --plenary: #6f93bd; --plenary-ink: #0d1520;
+    --breakout: rgba(27,35,44,0.78); --breakout-ink: #e8edf2;
+    --keynote: #d7b36e; --keynote-ink: #1f1600;
+    --social: #a37f98; --social-ink: #1a0f18;
+    --pause: rgba(27,35,44,0.35); --pause-ink: #b7c2cd;
+    --accent: #9dbbe0;
+    --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d; --sky-19: #232a45; --sky-20: #181d33;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.45; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-block: 24px 56px; padding-inline: 16px; }
+
+  /* ---- top bar ---- */
+  .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .bar-in { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .mark { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .mark svg { width: 36px; height: 36px; flex: none; }
+  .mark .m1 { font-family: var(--display); font-weight: 800; font-size: 15px; line-height: 1.05; letter-spacing: -0.01em; }
+  .mark .m2 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  nav { display: flex; gap: 4px; }
+  nav a { text-decoration: none; font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 999px; color: var(--muted); }
+  nav a.on, nav a:hover { background: var(--day); color: var(--ink); }
+  nav a:focus-visible, .ev:focus-visible, .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 56px); line-height: 0.98; margin: 0; letter-spacing: -0.01em; text-wrap: balance; max-width: 16ch; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.1; margin: 0 0 8px; text-wrap: balance; }
+  h3 { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0 0 4px; }
+  p { margin: 0; }
+  .lede { font-size: 17px; max-width: 62ch; }
+  .muted { color: var(--muted); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 999px; background: var(--plenary); color: var(--plenary-ink); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+
+  /* ---- home ---- */
+  .hero { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 28px; align-items: stretch; margin-bottom: 36px; }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+  .hero-text { display: grid; gap: 16px; align-content: center; }
+  .hero-art { border-radius: 14px; overflow: hidden; min-height: 240px; position: relative;
+    background: linear-gradient(180deg, var(--sky-9) 0%, var(--sky-12) 30%, var(--sky-15) 55%, var(--sky-17) 75%, var(--sky-1830) 88%, var(--sky-19) 100%); }
+  .hero-art .sun { position: absolute; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #fff6dc, #f2d7a6 70%, rgba(242,215,166,0) 72%); right: 14%; top: 22%; }
+  .hero-art .hz { position: absolute; left: 0; right: 0; bottom: 0; height: 26%; background: var(--plenary); opacity: 0.9; }
+  .hero-art .meta { position: absolute; left: 18px; bottom: 16px; color: #fff; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; display: grid; gap: 4px; }
+  .hero-art .meta b { font-family: var(--display); font-size: 22px; letter-spacing: 0; text-transform: none; font-weight: 700; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 36px; }
+  .fact { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .fact .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .fact .v { font-weight: 600; margin-top: 2px; }
+  .section { margin-bottom: 36px; display: grid; gap: 12px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 28px; }
+  .cols p, .cols li { max-width: 60ch; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .step { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; }
+  .step .q { font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--accent); }
+  .themes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .themes span { background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; font-size: 13px; }
+  .people { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .person { display: flex; gap: 12px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-decoration: none; min-width: 0; }
+  .person .who { min-width: 0; }
+  .person .nm { font-weight: 600; line-height: 1.2; }
+  .person .af { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+
+  /* ---- provisional portrait: a soft sky disc with initials, dashed ring, little "photo soon" tag ---- */
+  .ava { position: relative; width: 56px; height: 56px; flex: none; }
+  .ava .disc { width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 18px; color: #1f2a36; border: 2px dashed rgba(47,74,107,0.45); background: var(--ava-bg, var(--sky-12)); }
+  .ava .tag { position: absolute; right: -6px; bottom: -4px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.06em; padding: 2px 5px; color: var(--muted); white-space: nowrap; }
+  .ava.lg { width: 88px; height: 88px; }
+  .ava.lg .disc { font-size: 28px; }
+  .ava.tba .disc { background: var(--pause); color: var(--muted); font-size: 22px; }
+
+  /* ---- schedule grid ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; margin: 14px 0 20px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid rgba(47,74,107,0.25); }
+  .sw.sky { background: linear-gradient(180deg, var(--sky-9), var(--sky-12), var(--sky-17), var(--sky-19)); }
+  .days { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 760px) { .days { grid-template-columns: 1fr; } }
+  .day { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 0 0 20px; min-width: 0; overflow: hidden; }
+  .day-head { background: var(--day); padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+  .day:nth-child(2) .day-head { background: var(--day2); }
+  .day h2 { font-size: 26px; margin: 0 0 2px; }
+  .day .when { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 0; letter-spacing: 0.04em; }
+  .grid-wrap { padding: 14px 16px 0; }
+  .grid { display: grid; grid-template-columns: 58px 1fr; grid-auto-rows: var(--row); column-gap: 10px; position: relative; border-radius: 8px; padding: 0 8px 0 0; }
+  .grid::before { content: ""; position: absolute; inset: 0; border-radius: 8px; background: var(--skybg); z-index: 0; }
+  .grid > * { position: relative; z-index: 1; }
+  .tick { grid-column: 1; font-family: var(--mono); font-size: 11px; color: var(--ink); opacity: 0.75; text-align: right; padding-right: 2px; transform: translateY(-7px); font-variant-numeric: tabular-nums; }
+  .tick.night { color: #fff; opacity: 0.85; }
+  .rule { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,0.45); height: 0; align-self: start; pointer-events: none; }
+  .ev { grid-column: 2; border-radius: 8px; padding: 7px 11px; box-shadow: 0 1px 2px rgba(20,30,40,0.08); min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow: hidden; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+  a.ev:hover { transform: translateX(3px); box-shadow: 0 4px 12px rgba(20,30,40,0.16); }
+  @media (prefers-reduced-motion: reduce) { .ev { transition: none; } a.ev:hover { transform: none; } }
+  .ev .t { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; opacity: 0.85; font-variant-numeric: tabular-nums; }
+  .ev .n { font-family: var(--display); font-weight: 700; font-size: 15px; line-height: 1.12; text-wrap: balance; }
+  .ev .p { font-size: 12px; line-height: 1.3; opacity: 0.92; }
+  .ev .k { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.75; }
+  .plenary { background: var(--plenary); color: var(--plenary-ink); }
+  .breakout { background: var(--breakout); color: var(--breakout-ink); border: 1px solid rgba(47,74,107,0.18); }
+  .keynote { background: var(--keynote); color: var(--keynote-ink); }
+  .social { background: var(--social); color: var(--social-ink); }
+  .pause { background: var(--pause); color: var(--pause-ink); box-shadow: none; padding-block: 2px; justify-content: center; }
+  .pause .n { font-family: var(--mono); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .pause .p { font-size: 11px; }
+  .pair { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; min-width: 0; }
+  .pair .ev { grid-column: auto; }
+  .pair .ev .n { font-size: 14px; }
+  .pair .ev .t, .keynote .t, .social .t { display: none; }
+  .keynote, .social { padding-block: 6px; }
+
+  /* ---- event page ---- */
+  .crumbs { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .crumbs a { color: var(--muted); }
+  .evhead { border-radius: 14px; padding: 22px 22px 20px; margin-bottom: 20px; display: grid; gap: 8px; position: relative; overflow: hidden; }
+  .evhead h1 { font-size: clamp(26px, 4vw, 42px); max-width: 24ch; }
+  .evhead .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
+  .evhead .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+  .evhead .meta b { font-weight: 600; }
+  .evbody { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: start; }
+  @media (max-width: 760px) { .evbody { grid-template-columns: 1fr; } }
+  .desc { display: grid; gap: 12px; }
+  .desc p { max-width: 62ch; font-size: 15.5px; }
+  .ask { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+  @media (max-width: 480px) { .ask { grid-template-columns: 1fr; } }
+  .ask div { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 13px; }
+  .ask div b { display: block; font-family: var(--display); font-size: 15px; color: var(--accent); }
+  .speakers { display: grid; gap: 10px; }
+  .spk { display: flex; gap: 14px; align-items: flex-start; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0; }
+  .spk .nm { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.15; }
+  .spk .af { font-size: 13px; color: var(--muted); }
+  .spk .bio { font-size: 13.5px; margin-top: 4px; }
+  .draft { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+  .nextprev { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .nextprev a { font-size: 14px; text-decoration: none; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); max-width: 48%; }
+  .nextprev a span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---- speakers index ---- */
+  .idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  footer { margin-top: 36px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body style="margin:0">
+
+<div class="bar"><div class="bar-in">
+  <a class="mark" href="#home" aria-label="Home">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="var(--plenary)"/><path d="M8 30 Q24 12 40 30" fill="none" stroke="#f2d7a6" stroke-width="2.5"/><circle cx="24" cy="21" r="5" fill="#f2d7a6"/><rect x="8" y="30" width="32" height="8" fill="#1f2a36" opacity=".55"/></svg>
+    <span><span class="m1">Democratic Decline and Renewal<br>in the Digital Age</span><br><span class="m2">Information Society Project · Yale Law School</span></span>
+  </a>
+  <nav id="nav"><a href="#home">Home</a><a href="#schedule">Schedule</a><a href="#speakers">Speakers</a></nav>
+</div></div>
+
+<div class="wrap" id="app"></div>
+
+<script>
+  // ---------- data ----------
+  const DAYS = [
+    { id: 1, name: "Day 1", when: "Friday, April 2, 2027", start: 9 * 60, end: 19 * 60 + 45 },
+    { id: 2, name: "Day 2", when: "Saturday, April 3, 2027", start: 9 * 60, end: 14 * 60 + 15 },
+  ];
+  const SPEAKERS = {
+    "gillian-metzger": { n: "Gillian Metzger", a: "Columbia Law School", b: "Constitutional and administrative law scholar whose work centres on the structure and accountability of the executive branch." },
+    "bob-bauer": { n: "Bob Bauer", a: "NYU School of Law", b: "Former White House Counsel; writes on presidential power, election law and the reform of the presidency." },
+    "jack-goldsmith": { n: "Jack Goldsmith", a: "Harvard Law School", b: "Former Assistant Attorney General for the Office of Legal Counsel; scholar of executive power and national security law." },
+    "ian-bassin": { n: "Ian Bassin", a: "Protect Democracy", b: "Co-founder and executive director of Protect Democracy; former Associate White House Counsel." },
+    "susan-rose-ackerman": { n: "Susan Rose-Ackerman", a: "Yale Law School", b: "Leading scholar of corruption, comparative administrative law and the political economy of government." },
+    "zephyr-teachout": { n: "Zephyr Teachout", a: "Fordham Law School", b: "Author of Corruption in America; writes on antitrust, money in politics and the constitutional history of corruption." },
+    "matthew-stephenson": { n: "Matthew C. Stephenson", a: "Harvard Law School", b: "Scholar of anti-corruption law and administrative law; editor of the Global Anticorruption Blog." },
+    "michael-waldman": { n: "Michael Waldman", a: "Brennan Center for Justice", b: "President and CEO of the Brennan Center; former chief speechwriter to President Clinton." },
+    "elizabeth-goitein": { n: "Elizabeth Goitein", a: "Brennan Center for Justice", b: "Senior director of the Liberty and National Security Program; writes on surveillance, emergency powers and government secrecy." },
+    "hannah-bloch-wehba": { n: "Hannah Bloch-Wehba", a: "Texas A&M University School of Law", b: "Scholar of surveillance, platform governance and civil liberties; affiliated fellow of the Information Society Project." },
+    "julie-cohen": { n: "Julie Cohen", a: "Georgetown Law", b: "Author of Between Truth and Power; writes on information law, privacy and the political economy of the networked state." },
+    "margot-kaminski": { n: "Margot Kaminski", a: "University of Colorado Law School", b: "Scholar of privacy, algorithmic accountability and the law of artificial intelligence." },
+    "richard-hasen": { n: "Richard Hasen", a: "UCLA School of Law", b: "Director of the Safeguarding Democracy Project; author of the Election Law Blog and books on voting rights and campaign finance." },
+    "richard-pildes": { n: "Richard Pildes", a: "NYU School of Law", b: "Constitutional law scholar focused on the design of democratic institutions, parties and primaries." },
+    "michael-kang": { n: "Michael Kang", a: "Northwestern Pritzker School of Law", b: "Election law scholar who writes on campaign finance, parties and judicial elections." },
+    "deborah-hellman": { n: "Deborah Hellman", a: "University of Virginia School of Law", b: "Writes on discrimination, bribery and the constitutional treatment of money in politics." },
+    "franita-tolson": { n: "Franita Tolson", a: "USC Gould School of Law", b: "Dean of USC Gould; scholar of election law, voting rights and the constitutional structure of elections." },
+    "guy-charles": { n: "Guy-Uriel Charles", a: "Harvard Law School", b: "Director of the Charles Hamilton Houston Institute for Race and Justice; writes on race, voting and democracy." },
+    "nicholas-stephanopoulos": { n: "Nicholas Stephanopoulos", a: "Harvard Law School", b: "Election law scholar; co-creator of the efficiency gap measure of partisan gerrymandering." },
+    "pamela-karlan": { n: "Pamela Karlan", a: "Stanford Law School", b: "Co-director of the Supreme Court Litigation Clinic; former Principal Deputy Assistant Attorney General for Civil Rights." },
+    "eric-holder": { n: "Eric Holder", a: "Former Attorney General of the United States", b: "82nd Attorney General of the United States; chair of the National Democratic Redistricting Committee." },
+    "vanita-gupta": { n: "Vanita Gupta", a: "NYU School of Law", b: "Former Associate Attorney General of the United States and former head of the Civil Rights Division." },
+    "josh-chafetz": { n: "Josh Chafetz", a: "Georgetown Law", b: "Author of Congress's Constitution; writes on legislative power, separation of powers and institutional design." },
+    "larry-lessig": { n: "Lawrence Lessig", a: "Harvard Law School", b: "Founder of Creative Commons; writes on institutional corruption, campaign finance and constitutional reform." },
+    "jamal-greene": { n: "Jamal Greene", a: "Columbia Law School", b: "Author of How Rights Went Wrong; scholar of constitutional law and constitutional theory." },
+    "martha-minow": { n: "Martha Minow", a: "Harvard Law School", b: "Former dean of Harvard Law School; author of Saving the News on the future of journalism." },
+    "kim-scheppele": { n: "Kim Lane Scheppele", a: "Princeton University", b: "Scholar of constitutional backsliding and autocratic legalism, with a focus on Hungary and comparative cases." },
+    "amy-kapczynski": { n: "Amy Kapczynski", a: "Yale Law School", b: "Co-director of the Law and Political Economy Project; writes on knowledge institutions, health and information." },
+    "woody-hartzog": { n: "Woodrow Hartzog", a: "Boston University School of Law", b: "Author of Privacy's Blueprint; writes on privacy, AI and the design of technology regulation." },
+    "nathaniel-persily": { n: "Nathaniel Persily", a: "Stanford Law School", b: "Co-director of the Stanford Cyber Policy Center; election law and platform governance scholar." },
+    "matthew-botvinick": { n: "Matthew Botvinick", a: "Google DeepMind", b: "Neuroscientist and AI researcher working on the science and governance of artificial intelligence." },
+    "david-robinson": { n: "David Robinson", a: "Author, Voices in the Code", b: "Co-founder of Upturn; writes on democratic governance of algorithms and public technology." },
+    "steve-vladeck": { n: "Steve Vladeck", a: "Georgetown Law", b: "Author of The Shadow Docket; scholar of federal courts, jurisdiction and national security law." },
+    "daphna-renan": { n: "Daphna Renan", a: "Harvard Law School", b: "Scholar of the presidency, executive-branch legal structure and the separation of powers." },
+    "cristina-rodriguez": { n: "Cristina Rodríguez", a: "Yale Law School", b: "Co-chair of the 2021 Presidential Commission on the Supreme Court; scholar of immigration and constitutional law." },
+    "alicia-bannon": { n: "Alicia Bannon", a: "Brennan Center for Justice", b: "Director of the Judiciary Program; works on judicial ethics, state courts and court reform." },
+    "david-cole": { n: "David Cole", a: "Georgetown Law", b: "Former National Legal Director of the ACLU; writes on civil liberties, constitutional law and civil society." },
+    "julia-spiegel": { n: "Julia Spiegel", a: "Governors Alliance", b: "" },
+    "melissa-murray": { n: "Melissa Murray", a: "NYU School of Law", b: "Constitutional and family law scholar; co-host of the Strict Scrutiny podcast." },
+  };
+  const EVENTS = [
+    { id: "executive-power", day: 1, s: 540, e: 630, kind: "plenary", k: "Plenary", n: "Reforming Executive Power", sub: "Reforming the Justice Department",
+      spk: ["gillian-metzger", "bob-bauer", "jack-goldsmith", "ian-bassin"],
+      d: ["How can executive power be reformed, and accountability rebuilt, after the expansion of presidential authority? This panel considers how to restrain executive power, codify norms, empower Congress and develop durable checks on the executive, with particular attention to the Justice Department.",
+          "Panelists will identify concrete changes to executive-branch practices and legal safeguards, who could implement them, and how they would operate when existing checks are resisted or weakened."] },
+    { id: "break-1a", day: 1, s: 630, e: 645, kind: "pause", n: "Break" },
+    { id: "anti-corruption", day: 1, s: 645, e: 735, kind: "breakout", k: "Breakout", n: "Anti-Corruption and Cronyism", pair: "d1b",
+      spk: ["susan-rose-ackerman", "zephyr-teachout", "matthew-stephenson", "michael-waldman"],
+      d: ["How do corporate interests capture government officials, regulators and lawmakers, and what institutional reforms can prevent corruption and cronyism? This session tests possible changes to government contracting, emoluments safeguards, the use of pardons and revolving-door rules.",
+          "Panelists will ask how private-public arrangements let consequential decisions move out of public view, and how to hold private companies accountable when they assume state functions."] },
+    { id: "surveillance-state", day: 1, s: 645, e: 735, kind: "breakout", k: "Breakout", n: "Reforming the Surveillance State", pair: "d1b",
+      spk: ["elizabeth-goitein", "hannah-bloch-wehba", "julie-cohen", "margot-kaminski"],
+      d: ["How can state surveillance be limited in ways that protect democracy and civil liberties? This session considers safeguards against agencies circumventing constitutional limits by purchasing personal data from private companies, alongside reforms to surveillance authority, oversight, transparency and accountability.",
+          "Panelists will assess legal and institutional safeguards for AI-enabled surveillance and explain how litigation and advocacy can advance reform. Broader questions of AI governance are taken up in AI and Democracy on Day 2."] },
+    { id: "lunch-1", day: 1, s: 735, e: 810, kind: "pause", n: "Lunch", p: "For schmoozing." },
+    { id: "campaign-finance", day: 1, s: 810, e: 900, kind: "plenary", k: "Plenary", n: "Campaign Finance and the Party System",
+      spk: ["richard-hasen", "richard-pildes", "michael-kang", "deborah-hellman"],
+      d: ["How do campaign-finance rules shape political parties' capacity to organise, recruit candidates and sustain democratic participation? Parties' influence is tied to control over money and voter data, so reform of the party system has to be considered alongside campaign-finance reform.",
+          "Panelists will assess proposals such as small-donor public financing, changes to the rules governing parties and outside groups, and institutional reforms to strengthen parties' accountability and inclusive candidate recruitment."] },
+    { id: "break-1b", day: 1, s: 900, e: 915, kind: "pause", n: "Break" },
+    { id: "voting-rights", day: 1, s: 915, e: 1005, kind: "plenary", k: "Plenary", n: "Reforming Representation and Voting Rights",
+      spk: ["franita-tolson", "guy-charles", "nicholas-stephanopoulos", "pamela-karlan"],
+      d: ["How can representation and voting rights be strengthened as federal protections and judicial remedies narrow? Gerrymandering and primary reform belong here.",
+          "Panelists will assess reforms through state constitutional litigation, independent redistricting commissions, congressional regulation and changes to primary systems, and ask how to reduce self-interest in redistricting and translate reform ideas into workable legislation."] },
+    { id: "break-1c", day: 1, s: 1005, e: 1020, kind: "pause", n: "Break" },
+    { id: "keynote", day: 1, s: 1020, e: 1065, kind: "keynote", k: "Keynote conversation", n: "Eric Holder in conversation with Vanita Gupta", p: "5:00–5:45 pm",
+      spk: ["eric-holder", "vanita-gupta"],
+      d: ["A fireside conversation to close the first day. Vanita Gupta interviews Eric Holder on the state of American democracy, drawing the day's threads together: voting rights, redistricting and the reform of executive power.",
+          "The conversation is separate from the panel sessions and runs 45 minutes, followed by cocktails and dinner."] },
+    { id: "cocktails", day: 1, s: 1110, e: 1140, kind: "social", k: "Evening", n: "Cocktails", p: "6:30 pm",
+      d: ["Drinks for all participants before dinner. Venue to be announced."] },
+    { id: "dinner", day: 1, s: 1140, e: 1185, kind: "social", k: "Evening", n: "Dinner", p: "7:00 pm · venue to be announced",
+      d: ["Conference dinner for all participants. Venue to be announced."] },
+
+    { id: "congress", day: 2, s: 540, e: 615, kind: "plenary", k: "Plenary", n: "Rebuilding Congress and Amending the Constitution",
+      spk: ["josh-chafetz", "larry-lessig", "jamal-greene", null],
+      d: ["How can Congress rebuild its capacity to gather expertise, exercise its powers and control appropriations? Congress retains hard powers, among them the power to declare war, the power of the purse and the contempt power, alongside the prerogatives of speech and debate, internal discipline over members and rulemaking.",
+          "Panelists will identify reforms that would help Congress use those powers effectively: the role of committee chairs, the capacity of congressional agencies, and whether oversight or good-government functions could be placed with Congress. The panel focuses on institutional capacity and implementation, including the amendment process."] },
+    { id: "break-2a", day: 2, s: 615, e: 630, kind: "pause", n: "Break" },
+    { id: "knowledge-institutions", day: 2, s: 630, e: 690, kind: "breakout", k: "Breakout", n: "Reviving Knowledge Institutions", pair: "d2b",
+      spk: ["martha-minow", "kim-scheppele", "amy-kapczynski", null],
+      d: ["How can the institutions that produce and sustain public knowledge, including journalism and universities, be revived? Disinformation and conspiracy theories belong within this discussion.",
+          "Panelists will consider how digital platforms and AI affect the production, distribution and credibility of information, and what institutions can change to rebuild trust and establish shared facts, developing proposals for journalism reform and other institutional practices that affirm accuracy while protecting freedom of expression."] },
+    { id: "ai-democracy", day: 2, s: 630, e: 690, kind: "breakout", k: "Breakout", n: "AI and Democracy", pair: "d2b",
+      spk: ["woody-hartzog", "nathaniel-persily", "matthew-botvinick", "david-robinson"],
+      d: ["How can AI governance protect democracy and the public interest? Speakers will develop concrete reforms and explain who could implement them.",
+          "The discussion focuses on democratic safeguards, public accountability and the institutions needed to govern AI. Surveillance-specific safeguards are addressed in Reforming the Surveillance State on Day 1."] },
+    { id: "break-2b", day: 2, s: 690, e: 705, kind: "pause", n: "Break" },
+    { id: "court-reform", day: 2, s: 705, e: 780, kind: "plenary", k: "Plenary", n: "Court Reform",
+      spk: ["steve-vladeck", "daphna-renan", "cristina-rodriguez", "alicia-bannon"],
+      d: ["This panel weighs the courts' role as a check on constitutional violations against the consequences when courts are captured, ignored or rendered ineffective.",
+          "Panelists will examine proposals concerning jurisdiction, judicial ethics and term limits, including how those changes could restore accountability and effective remedies. The discussion may also consider federalism, court expansion and state courts as forums for rights protection."] },
+    { id: "closing", day: 2, s: 790, e: 840, kind: "plenary", k: "Closing plenary · lunch served", n: "Closing Plenary on Universities and Civil Society",
+      spk: ["david-cole", "julia-spiegel", "ian-bassin", "melissa-murray"],
+      d: ["The law is a powerful instrument for challenging inequality, oppression and marginalisation. Yet durable change seldom follows from legal argument alone. Reform ideas developed in the academy and the legal profession reach a wider democratic audience, and translate into meaningful action, only when they are joined to organising, coalition-building and a sophisticated understanding of community, politics and power.",
+          "This plenary asks what people in universities and civil society should do next. Drawing on the conference's reform proposals, participants will consider the responsibilities of universities in research, teaching and public engagement, and the roles of civil-society organisations in advocacy, organising and coalition-building. The aim is for attendees to leave with concrete ways to advance democratic renewal."] },
+    { id: "end", day: 2, s: 840, e: 855, kind: "pause", n: "Conference closes · 2:00 pm" },
+  ];
+  const SESSIONS = EVENTS.filter(e => e.kind !== "pause");
+
+  // ---------- helpers ----------
+  const fmt = m => { const h24 = Math.floor(m / 60), mm = m % 60; return `${((h24 + 11) % 12) + 1}:${String(mm).padStart(2, "0")}`; };
+  const ampm = m => fmt(m) + (m < 720 ? " am" : " pm");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const initials = n => n.split(/\s+/).filter(w => /^[A-Z]/.test(w)).map(w => w[0]).slice(0, 2).join("");
+  const skyFor = m => { // colour token for the hour, used to tint portraits by when the person speaks
+    if (m < 11 * 60) return "var(--sky-9)"; if (m < 14 * 60) return "var(--sky-12)"; if (m < 16 * 60 + 30) return "var(--sky-15)"; if (m < 18 * 60) return "var(--sky-17)"; return "var(--sky-1830)"; };
+  const avatar = (id, m, lg) => {
+    if (!id) return `<div class="ava tba ${lg ? "lg" : ""}"><div class="disc">?</div><span class="tag">to be announced</span></div>`;
+    const p = SPEAKERS[id];
+    return `<div class="ava ${lg ? "lg" : ""}" style="--ava-bg:${skyFor(m)}"><div class="disc">${esc(initials(p.n))}</div><span class="tag">photo soon</span></div>`;
+  };
+  const names = ev => (ev.spk || []).filter(Boolean).map(id => SPEAKERS[id].n).join(", ");
+  const dayOf = ev => DAYS.find(d => d.id === ev.day);
+  const sessionOf = id => SESSIONS.find(s => s.id === id);
+  const eventsFor = id => SESSIONS.filter(s => (s.spk || []).includes(id));
+
+  // ---------- pages ----------
+  function home() {
+    const organisers = [
+      ["Jack M. Balkin", "Knight Professor of Constitutional Law and the First Amendment; Director, Information Society Project"],
+      ["Genevieve Scott", "Clinical Professor of Law; Senior Fellow, Program for the Study of Reproductive Justice"],
+      ["Caleb Yong", "Resident Fellow, Information Society Project"],
+      ["Laura Matta", "Resident Fellow, Information Society Project"],
+    ];
+    return `
+    <section class="hero">
+      <div class="hero-text">
+        <div class="eyebrow">An Information Society Project conference · Yale Law School</div>
+        <h1>Democratic Decline and Renewal in the Digital Age</h1>
+        <p class="lede">Two days on how democracies erode, and what it would take to repair them. Not a catalogue of what is broken: every session ends with a proposal.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="#speakers">Speakers</a></div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="hz"></div>
+        <div class="meta"><b>April 2–3, 2027</b><span>Yale Law School · New Haven</span></div></div>
+    </section>
+
+    <div class="facts">
+      <div class="fact"><div class="k">When</div><div class="v">Friday 2 and Saturday 3 April 2027</div></div>
+      <div class="fact"><div class="k">Where</div><div class="v">Yale Law School, 127 Wall Street, New Haven, CT</div></div>
+      <div class="fact"><div class="k">Format</div><div class="v">In person only · off the record</div></div>
+      <div class="fact"><div class="k">Programme</div><div class="v">9 panels · 1 keynote · closing lunch plenary</div></div>
+    </div>
+
+    <section class="section">
+      <h2>Solutioneering</h2>
+      <div class="cols">
+        <p>Democratic governance has eroded around the world. Leaders have aggrandised their power through emergency authority and the selective use of prosecutorial and regulatory tools against rivals. Courts have proven ineffective or captured, legislatures have failed at oversight, parties have been hollowed out, and gerrymandering insulates incumbents from accountability. Digital technologies sharpen each of these pathologies: an expanding surveillance state, a degraded public sphere that fuels conspiracy theories and extremism, and mounting pressure on universities, scientific bodies and independent journalism.</p>
+        <p>This conference starts from that diagnosis and insists on the next step. Every panel is built around reform rather than lament. Each panelist writes a short paper in advance that proposes something specific, and the conversation in the room is about whether it would work. We call the approach solutioneering: diagnosis and remedy, in the same breath. The papers will be collected into a Solutioneering pamphlet after the conference.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="q">What could change?</div><p class="muted">A concrete reform: a rule, an institution, a practice, a statute.</p></div>
+        <div class="step"><div class="q">Who could act?</div><p class="muted">Courts, Congress, states, agencies, universities, civil society, platforms.</p></div>
+        <div class="step"><div class="q">How would it work?</div><p class="muted">Especially when the existing checks are resisted or already weakened.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Themes</h2>
+      <div class="themes">
+        ${["Executive power", "Corruption and cronyism", "The surveillance state", "Campaign finance and parties", "Representation and voting rights", "Congress and the amendment process", "Knowledge institutions and the public sphere", "AI and democracy", "Courts", "Universities and civil society"].map(t => `<span>${t}</span>`).join("")}
+      </div>
+      <p class="muted" style="max-width:62ch">The programme brings together scholars of constitutional design and election law with people working on platform governance and the political economy of knowledge production, alongside litigators, advocates and policy practitioners. Those conversations are usually siloed; here they share a room.</p>
+    </section>
+
+    <section class="section">
+      <h2>How the two days run</h2>
+      <div class="cols">
+        <div><h3>Day 1 · Friday</h3><p class="muted">Two plenaries in the morning and afternoon, a pair of parallel breakouts before lunch, and a keynote conversation at five, followed by cocktails and dinner. Lunch is unprogrammed, on purpose: for schmoozing.</p></div>
+        <div><h3>Day 2 · Saturday</h3><p class="muted">A plenary on Congress, a second pair of breakouts, Court Reform, and a closing plenary over lunch on what universities and civil society should do next. The conference closes at 2:00 pm.</p></div>
+        <div><h3>Reading</h3><p class="muted">Participants are asked to read the short papers (around 8,000 words each) discussed in every panel. They will be circulated in advance.</p></div>
+        <div><h3>Attendance</h3><p class="muted">Open to the Yale Law School community and a limited number of invited guests. The conference is off the record; press may attend but not report.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Convened by</h2>
+      <div class="people">
+        ${organisers.map(([n, t]) => `<div class="person"><div class="ava" style="--ava-bg:var(--sky-15)"><div class="disc">${esc(initials(n))}</div></div><div class="who"><div class="nm">${esc(n)}</div><div class="af">${esc(t)}</div></div></div>`).join("")}
+      </div>
+      <p class="muted">The Information Society Project is an intellectual centre at Yale Law School studying the implications of the Internet and new information technologies for law and society.</p>
+    </section>`;
+  }
+
+  function schedule() {
+    let html = `<div class="eyebrow">Programme</div><h1 style="margin-bottom:8px">Schedule</h1>
+      <p class="lede muted">Every block is a link. Each block's height is its real length; the backdrop follows the sky, morning to night.</p>
+      <div class="legend">
+        <span><i class="sw plenary"></i>Plenary</span><span><i class="sw breakout"></i>Breakout (run in parallel, pick one)</span>
+        <span><i class="sw keynote"></i>Keynote conversation</span><span><i class="sw social"></i>Cocktails &amp; dinner</span>
+        <span><i class="sw pause"></i>Break / lunch</span><span><i class="sw sky"></i>Backdrop follows the sky</span></div>
+      <div class="days" id="days"></div>`;
+    return html;
+  }
+  function buildGrid() {
+    const root = document.getElementById("days"); if (!root) return;
+    const row = (day, m, up) => (up ? Math.ceil : Math.floor)((m - day.start) / 15) + 1;
+    for (const day of DAYS) {
+      const sec = document.createElement("section"); sec.className = "day";
+      sec.innerHTML = `<div class="day-head"><h2>${day.name}</h2><p class="when">${day.when}</p></div>`;
+      const wrap = document.createElement("div"); wrap.className = "grid-wrap";
+      const grid = document.createElement("div"); grid.className = "grid";
+      grid.style.gridTemplateRows = `repeat(${row(day, day.end, true) - 1}, var(--row))`;
+      const stops = [[540, "--sky-9"], [720, "--sky-12"], [900, "--sky-15"], [1020, "--sky-17"], [1110, "--sky-1830"], [1140, "--sky-19"], [1200, "--sky-20"]];
+      const pct = m => Math.min(100, Math.max(0, (m - day.start) / (day.end - day.start) * 100));
+      grid.style.setProperty("--skybg", `linear-gradient(180deg, ${stops.filter(([m]) => m <= day.end + 60).map(([m, v]) => `var(${v}) ${pct(m).toFixed(1)}%`).join(", ")})`);
+      for (let m = day.start; m <= day.end; m += 60) {
+        const r = row(day, m);
+        const tick = document.createElement("div"); tick.className = "tick" + (m >= 1140 ? " night" : ""); tick.style.gridRow = `${r}`; tick.textContent = ampm(m).replace(" ", ""); grid.appendChild(tick);
+        const rule = document.createElement("div"); rule.className = "rule"; rule.style.gridRow = `${r}`; grid.appendChild(rule);
+      }
+      const card = ev => {
+        const isLink = ev.kind !== "pause";
+        const d = document.createElement(isLink ? "a" : "div");
+        d.className = `ev ${ev.kind}`; if (isLink) d.href = `#${ev.id}`;
+        const time = `<span class="t">${fmt(ev.s)}–${fmt(ev.e)}</span>`;
+        const k = ev.k ? `<span class="k">${ev.k}</span>` : "";
+        const p = ev.kind === "pause" ? (ev.p ? `<span class="p">${ev.p}</span>` : "") : `<span class="p">${esc(ev.p || names(ev))}</span>`;
+        d.innerHTML = ev.kind === "pause"
+          ? `<span class="n">${ev.n}${ev.n === "Lunch" ? ` · ${fmt(ev.s)}–${fmt(ev.e)}` : ""}</span>${p}`
+          : `${time}${k}<span class="n">${esc(ev.n)}</span>${p}`;
+        return d;
+      };
+      const evs = EVENTS.filter(e => e.day === day.id); const done = new Set();
+      for (const ev of evs) {
+        if (done.has(ev.id)) continue;
+        let el;
+        if (ev.pair) {
+          el = document.createElement("div"); el.className = "pair";
+          for (const it of evs.filter(x => x.pair === ev.pair)) { el.appendChild(card(it)); done.add(it.id); }
+        } else { el = card(ev); done.add(ev.id); }
+        el.style.gridRow = `${row(day, ev.s)} / ${row(day, ev.e, true)}`;
+        grid.appendChild(el);
+      }
+      wrap.appendChild(grid); sec.appendChild(wrap); root.appendChild(sec);
+    }
+  }
+
+  function eventPage(ev) {
+    const day = dayOf(ev);
+    const i = SESSIONS.indexOf(ev); const prev = SESSIONS[i - 1], next = SESSIONS[i + 1];
+    const parallel = ev.pair ? SESSIONS.filter(x => x.pair === ev.pair && x !== ev) : [];
+    const speakers = (ev.spk || []).map(id => {
+      if (!id) return `<div class="spk">${avatar(null, ev.s, true)}<div><div class="nm">To be announced</div><div class="af">Fourth panelist</div></div></div>`;
+      const p = SPEAKERS[id];
+      return `<div class="spk">${avatar(id, ev.s, true)}<div style="min-width:0"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div>${p.b ? `<div class="bio">${esc(p.b)}</div>` : ""}<div class="draft">Draft bio · to be confirmed with the speaker</div></div></div>`;
+    }).join("");
+    return `
+    <div class="crumbs"><a href="#home">Home</a> › <a href="#schedule">Schedule</a> › ${esc(ev.n)}</div>
+    <div class="evhead ${ev.kind}">
+      <div class="k">${esc(ev.k || "")} · ${day.name}</div>
+      <h1>${esc(ev.n)}</h1>
+      ${ev.sub ? `<p style="font-size:17px;opacity:.9">${esc(ev.sub)}</p>` : ""}
+      <div class="meta"><span><b>${day.when}</b></span><span>${ampm(ev.s)} to ${ampm(ev.e)}</span>${ev.kind === "closing" ? "" : ""}${ev.kind === "breakout" ? `<span>Runs in parallel with ${parallel.map(x => `<a href="#${x.id}">${esc(x.n)}</a>`).join(", ")}</span>` : ""}${ev.kind === "plenary" || ev.kind === "keynote" ? "<span>All participants</span>" : ""}</div>
+    </div>
+    <div class="evbody">
+      <div class="desc">
+        ${(ev.d || []).map(p => `<p>${esc(p)}</p>`).join("")}
+        ${ev.spk && ev.kind !== "keynote" ? `<div class="ask"><div><b>What could change?</b>Each paper names a reform.</div><div><b>Who could act?</b>And the institution that would carry it.</div><div><b>How would it work?</b>When the usual checks push back.</div></div>` : ""}
+      </div>
+      <div>
+        ${ev.spk ? `<h2>${ev.kind === "keynote" ? "In conversation" : "Panelists"}</h2><div class="speakers">${speakers}</div>` : ""}
+      </div>
+    </div>
+    <div class="nextprev">
+      ${prev ? `<a href="#${prev.id}"><span>Previous</span>${esc(prev.n)}</a>` : "<span></span>"}
+      ${next ? `<a href="#${next.id}" style="text-align:right"><span>Next</span>${esc(next.n)}</a>` : ""}
+    </div>`;
+  }
+
+  function speakersPage() {
+    const ids = Object.keys(SPEAKERS).sort((a, b) => SPEAKERS[a].n.split(" ").pop().localeCompare(SPEAKERS[b].n.split(" ").pop()));
+    return `<div class="eyebrow">Participants</div><h1 style="margin-bottom:8px">Speakers</h1>
+      <p class="lede muted" style="margin-bottom:18px">Listed alphabetically by surname. Click a name for the session.</p>
+      <div class="idx">${ids.map(id => { const p = SPEAKERS[id]; const evs = eventsFor(id); const first = evs[0];
+        return `<a class="person" href="#${first ? first.id : "schedule"}">${avatar(id, first ? first.s : 600)}<div class="who"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="af">${evs.map(e => esc(e.n)).join(" · ")}</div></div></a>`; }).join("")}</div>`;
+  }
+
+  // ---------- router ----------
+  function render() {
+    const h = (location.hash || "#home").slice(1).toLowerCase();
+    const app = document.getElementById("app");
+    let page = "home";
+    if (h === "schedule") { app.innerHTML = schedule(); buildGrid(); page = "schedule"; }
+    else if (h === "speakers") { app.innerHTML = speakersPage(); page = "speakers"; }
+    else if (sessionOf(h)) { app.innerHTML = eventPage(sessionOf(h)); page = "schedule"; }
+    else { app.innerHTML = home(); }
+    app.insertAdjacentHTML("beforeend", `<footer><span>Information Society Project · Yale Law School</span><span>Programme and participants subject to change</span></footer>`);
+    document.querySelectorAll("#nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === `#${page}`));
+    window.scrollTo({ top: 0 });
+  }
+  window.addEventListener("hashchange", render);
+  render();
+</script>
+</body>
+</html>
