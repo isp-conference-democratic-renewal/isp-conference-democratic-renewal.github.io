@@ -489,9 +489,10 @@
         return `<a class="person" href="#${first ? first.id : "schedule"}">${avatar(id, first ? first.s : 600)}<div class="who"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="af">${evs.map(e => esc(e.n)).join(" · ")}</div></div></a>`; }).join("")}</div>`;
   }
 
-  // ---------- router ----------
+  // ---------- router: in-page links switch views here, without leaving the page ----------
+  let route = (location.hash || "#home").slice(1).toLowerCase();
   function render() {
-    const h = (location.hash || "#home").slice(1).toLowerCase();
+    const h = route;
     const app = document.getElementById("app");
     let page = "home";
     if (h === "schedule") { app.innerHTML = schedule(); buildGrid(); page = "schedule"; }
@@ -502,7 +503,16 @@
     document.querySelectorAll("#nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === `#${page}`));
     window.scrollTo({ top: 0 });
   }
-  window.addEventListener("hashchange", render);
+  function go(id) {
+    route = id.toLowerCase();
+    try { if (location.hash.slice(1).toLowerCase() !== route) history.replaceState(null, "", "#" + route); } catch (e) {}
+    render();
+  }
+  document.addEventListener("click", e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a) return;
+    e.preventDefault(); go(a.getAttribute("href").slice(1));
+  });
+  window.addEventListener("hashchange", () => { const h = (location.hash || "#home").slice(1).toLowerCase(); if (h !== route) { route = h; render(); } });
   render();
 </script>
 
