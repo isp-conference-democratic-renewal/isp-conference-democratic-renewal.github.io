@@ -8,39 +8,39 @@
 <style>
   /* Layout: a small conference site. Home (what and why), Schedule (the sky-backed time grid, every block a link), one page per session with speakers, and a speakers index. Hash routing, one file. */
   :root {
-    --bg: #f3f5f8;
+    --bg: #f6f8fb;
     --paper: #ffffff;
-    --ink: #1f2a36;
-    --muted: #5f6d7c;
-    --line: #cfd7df;
-    --day: #e4ebf3;
-    --day2: #d2dde9;
-    --plenary: #00356b;
+    --ink: #1e2a38;
+    --muted: #5e6b7a;
+    --line: #d9e1ea;
+    --yale: #00356b;          /* only the ISP band and the wordmark use the full brand blue */
+    --accent: #2a6ebb;
+    --day: #e9eff6;
+    --day2: #dde6f0;
+    --plenary: #3b6ea8;       /* a lighter cousin of the brand blue */
     --plenary-ink: #ffffff;
-    --breakout: rgba(255,255,255,0.82);
-    --breakout-ink: #1f2a36;
-    --keynote: #f2d7a6;
-    --keynote-ink: #3a2a08;
-    --social: #cba8bc;
-    --social-ink: #2b1b2a;
-    --pause: rgba(255,255,255,0.45);
-    --pause-ink: #4b5866;
-    --accent: #286dc0;
-    --yale: #00356b;
-    --sky-9: #e6f0f8; --sky-12: #aed3f0; --sky-15: #c3d6ea; --sky-17: #f2d7a6; --sky-1830: #cba8bc; --sky-19: #4e5c86; --sky-20: #2f3a5c;
+    --breakout: rgba(255,255,255,0.86);
+    --breakout-ink: #1e2a38;
+    --keynote: #f5e4bf;
+    --keynote-ink: #4a3a12;
+    --social: #dccfe0;
+    --social-ink: #3a2c40;
+    --pause: rgba(255,255,255,0.5);
+    --pause-ink: #5e6b7a;
+    --sky-9: #eef4fa; --sky-12: #d2e5f6; --sky-15: #dae4ee; --sky-17: #f7e8cb; --sky-1830: #e3d3dd; --sky-19: #a9b3cf; --sky-20: #8e9bbd;
     --display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
     --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
     --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
-    --row: 26px;
+    --row: 28px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
       --day: #26313d; --day2: #2e3a48;
-      --plenary: #6f9fd6; --plenary-ink: #0b1a2e;
+      --plenary: #7aa6d9; --plenary-ink: #0b1a2e;
       --breakout: rgba(27,35,44,0.78); --breakout-ink: #e8edf2;
-      --keynote: #d7b36e; --keynote-ink: #1f1600;
-      --social: #a37f98; --social-ink: #1a0f18;
+      --keynote: #cdb27a; --keynote-ink: #1f1600;
+      --social: #9f8aa8; --social-ink: #1a0f18;
       --pause: rgba(27,35,44,0.35); --pause-ink: #b7c2cd;
       --accent: #9dbbe0; --yale: #00356b;
       --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d; --sky-19: #232a45; --sky-20: #181d33;
@@ -50,10 +50,10 @@
   :root[data-theme="dark"] {
     --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
     --day: #26313d; --day2: #2e3a48;
-    --plenary: #6f9fd6; --plenary-ink: #0b1a2e;
+    --plenary: #7aa6d9; --plenary-ink: #0b1a2e;
     --breakout: rgba(27,35,44,0.78); --breakout-ink: #e8edf2;
-    --keynote: #d7b36e; --keynote-ink: #1f1600;
-    --social: #a37f98; --social-ink: #1a0f18;
+    --keynote: #cdb27a; --keynote-ink: #1f1600;
+    --social: #9f8aa8; --social-ink: #1a0f18;
     --pause: rgba(27,35,44,0.35); --pause-ink: #b7c2cd;
     --accent: #9dbbe0; --yale: #00356b;
     --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d; --sky-19: #232a45; --sky-20: #181d33;
@@ -89,14 +89,11 @@
   .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 
   /* ---- home ---- */
-  .hero { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 28px; align-items: stretch; margin-bottom: 36px; }
-  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
-  .hero-text { display: grid; gap: 16px; align-content: center; }
-  .hero-art { border-radius: 14px; overflow: hidden; min-height: 240px; position: relative;
-    background: linear-gradient(180deg, var(--sky-9) 0%, var(--sky-12) 30%, var(--sky-15) 55%, var(--sky-17) 75%, var(--sky-1830) 88%, var(--sky-19) 100%); }
-  .hero-art .hz { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; background: var(--yale); }
-  .hero-art .meta { position: absolute; left: 18px; bottom: 16px; color: #fff; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; display: grid; gap: 4px; }
-  .hero-art .meta b { font-family: var(--display); font-size: 22px; letter-spacing: 0; text-transform: none; font-weight: 700; }
+  .hero { display: grid; gap: 18px; margin-bottom: 22px; max-width: 760px; }
+  .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-radius: 10px; padding: 14px 18px; margin-bottom: 28px; color: var(--ink);
+    background: linear-gradient(90deg, var(--sky-9) 0%, var(--sky-12) 35%, var(--sky-15) 55%, var(--sky-17) 78%, var(--sky-1830) 92%, var(--sky-19) 100%); }
+  .ribbon b { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.01em; }
+  .ribbon span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
   .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 36px; }
   .fact { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
   .fact .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -126,8 +123,7 @@
   /* ---- schedule grid ---- */
   .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; margin: 14px 0 20px; }
   .legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid rgba(47,74,107,0.25); }
-  .sw.sky { background: linear-gradient(180deg, var(--sky-9), var(--sky-12), var(--sky-17), var(--sky-19)); }
+  .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid rgba(59,110,168,0.25); }
   .days { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
   @media (max-width: 760px) { .days { grid-template-columns: 1fr; } }
   .day { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 0 0 20px; min-width: 0; overflow: hidden; }
@@ -140,9 +136,8 @@
   .grid::before { content: ""; position: absolute; inset: 0; border-radius: 8px; background: var(--skybg); z-index: 0; }
   .grid > * { position: relative; z-index: 1; }
   .tick { grid-column: 1; font-family: var(--mono); font-size: 11px; color: var(--ink); opacity: 0.75; text-align: right; padding-right: 2px; transform: translateY(-7px); font-variant-numeric: tabular-nums; }
-  .tick.night { color: #fff; opacity: 0.85; }
-  .rule { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,0.45); height: 0; align-self: start; pointer-events: none; }
-  .ev { grid-column: 2; border-radius: 8px; padding: 7px 11px; box-shadow: 0 1px 2px rgba(20,30,40,0.08); min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow: hidden; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+  .rule { grid-column: 2; border-top: 1px solid rgba(255,255,255,0.6); height: 0; align-self: start; pointer-events: none; }
+  .ev { grid-column: 2; border-radius: 8px; padding: 7px 11px; box-shadow: 0 1px 2px rgba(20,30,40,0.08); min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow: visible; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
   a.ev:hover { transform: translateX(3px); box-shadow: 0 4px 12px rgba(20,30,40,0.16); }
   @media (prefers-reduced-motion: reduce) { .ev { transition: none; } a.ev:hover { transform: none; } }
   .ev .t { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; opacity: 0.85; font-variant-numeric: tabular-nums; }
@@ -150,15 +145,16 @@
   .ev .p { font-size: 12px; line-height: 1.3; opacity: 0.92; }
   .ev .k { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.75; }
   .plenary { background: var(--plenary); color: var(--plenary-ink); }
-  .breakout { background: var(--breakout); color: var(--breakout-ink); border: 1px solid rgba(47,74,107,0.18); }
+  .breakout { background: var(--breakout); color: var(--breakout-ink); border: 1px solid rgba(59,110,168,0.22); }
   .keynote { background: var(--keynote); color: var(--keynote-ink); }
   .social { background: var(--social); color: var(--social-ink); }
-  .pause { background: var(--pause); color: var(--pause-ink); box-shadow: none; padding-block: 2px; justify-content: center; }
+  .pause { background: var(--pause); color: var(--pause-ink); box-shadow: none; padding-block: 2px; justify-content: center; overflow: hidden; }
   .pause .n { font-family: var(--mono); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
   .pause .p { font-size: 11px; }
   .pair { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; min-width: 0; }
   .pair .ev { grid-column: auto; }
   .pair .ev .n { font-size: 14px; }
+  .pair .ev .p { font-size: 11.5px; }
   .pair .ev .t, .keynote .t, .social .t { display: none; }
   .keynote, .social { padding-block: 6px; }
 
@@ -338,15 +334,12 @@
     ];
     return `
     <section class="hero">
-      <div class="hero-text">
-        <div class="eyebrow">Information Society Project · Yale Law School · Spring Conference 2027</div>
-        <h1>Democratic Decline and Renewal in the Digital Age</h1>
-        <p class="lede">Two days on how democracies erode, and what it would take to repair them. Not a catalogue of what is broken: every session ends with a proposal.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="#speakers">Speakers</a></div>
-      </div>
-      <div class="hero-art" aria-hidden="true"><div class="hz"></div>
-        <div class="meta"><b>April 2–3, 2027</b><span>Yale Law School · New Haven</span></div></div>
+      <div class="eyebrow">Information Society Project · Yale Law School · Spring Conference 2027</div>
+      <h1>Democratic Decline and Renewal in the Digital Age</h1>
+      <p class="lede">Two days on how democracies erode, and what it would take to repair them. Not a catalogue of what is broken: every session ends with a proposal.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="#speakers">Speakers</a></div>
     </section>
+    <div class="ribbon" aria-label="Dates and venue"><b>April 2–3, 2027</b><span>Yale Law School · New Haven, Connecticut</span></div>
 
     <div class="facts">
       <div class="fact"><div class="k">When</div><div class="v">Friday 2 and Saturday 3 April 2027</div></div>
@@ -397,11 +390,11 @@
 
   function schedule() {
     let html = `<div class="eyebrow">Programme</div><h1 style="margin-bottom:8px">Schedule</h1>
-      <p class="lede muted">Every block is a link. Each block's height is its real length; the backdrop follows the sky, morning to night.</p>
+      <p class="lede muted">Plenaries bring everyone together; breakouts run in parallel, so pick one. Click any session for details and speakers.</p>
       <div class="legend">
         <span><i class="sw plenary"></i>Plenary</span><span><i class="sw breakout"></i>Breakout (run in parallel, pick one)</span>
         <span><i class="sw keynote"></i>Keynote conversation</span><span><i class="sw social"></i>Cocktails &amp; dinner</span>
-        <span><i class="sw pause"></i>Break / lunch</span><span><i class="sw sky"></i>Backdrop follows the sky</span></div>
+        <span><i class="sw pause"></i>Break / lunch</span></div>
       <div class="days" id="days"></div>`;
     return html;
   }
@@ -419,7 +412,7 @@
       grid.style.setProperty("--skybg", `linear-gradient(180deg, ${stops.filter(([m]) => m <= day.end + 60).map(([m, v]) => `var(${v}) ${pct(m).toFixed(1)}%`).join(", ")})`);
       for (let m = day.start; m <= day.end; m += 60) {
         const r = row(day, m);
-        const tick = document.createElement("div"); tick.className = "tick" + (m >= 1140 ? " night" : ""); tick.style.gridRow = `${r}`; tick.textContent = ampm(m).replace(" ", ""); grid.appendChild(tick);
+        const tick = document.createElement("div"); tick.className = "tick"; tick.style.gridRow = `${r}`; tick.textContent = ampm(m).replace(" ", ""); grid.appendChild(tick);
         const rule = document.createElement("div"); rule.className = "rule"; rule.style.gridRow = `${r}`; grid.appendChild(rule);
       }
       const card = ev => {
