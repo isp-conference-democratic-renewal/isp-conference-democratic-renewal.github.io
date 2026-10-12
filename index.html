@@ -151,7 +151,7 @@
   .pause { background: var(--pause); color: var(--pause-ink); box-shadow: none; padding-block: 2px; justify-content: center; overflow: hidden; }
   .pause .n { font-family: var(--mono); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
   .pause .p { font-size: 11px; }
-  .pair { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; min-width: 0; }
+  .pair { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; min-width: 0; }
   .pair .ev { grid-column: auto; }
   .pair .ev .n { font-size: 14px; }
   .pair .ev .p { font-size: 11.5px; }
@@ -436,7 +436,13 @@
           el = document.createElement("div"); el.className = "pair";
           for (const it of evs.filter(x => x.pair === ev.pair)) { el.appendChild(card(it)); done.add(it.id); }
         } else { el = card(ev); done.add(ev.id); }
-        el.style.gridRow = `${row(day, ev.s)} / ${row(day, ev.e, true)}`;
+        const r1 = row(day, ev.s), r2 = row(day, ev.e, true);
+        el.style.gridRow = `${r1} / ${r2}`;
+        // place to the minute inside the 15-minute rows, plus a 2px breath on each side so neighbours never touch
+        const rowPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--row")) || 28;
+        const topOff = ((ev.s - day.start) / 15 - (r1 - 1)) * rowPx;
+        const botOff = ((r2 - 1) - (ev.e - day.start) / 15) * rowPx;
+        el.style.marginTop = `${topOff + 2}px`; el.style.marginBottom = `${botOff + 2}px`;
         grid.appendChild(el);
       }
       wrap.appendChild(grid); sec.appendChild(wrap); root.appendChild(sec);
