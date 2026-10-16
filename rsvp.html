@@ -220,6 +220,12 @@
           <span class="err" id="e-email">Please enter a valid email address.</span>
         </div>
       </div>
+      <div class="field" id="f-bio">
+        <label for="bio">A short bio for the conference website</label>
+        <textarea id="bio" name="bio" maxlength="1200" placeholder="Two or three sentences, as you would like them to appear alongside your name." aria-describedby="h-bio e-bio"></textarea>
+        <span class="hint" id="h-bio">Optional. We will publish it on the speakers page once you have confirmed; you can send a revised version later.</span>
+        <span class="err" id="e-bio">Please keep this under 1,200 characters.</span>
+      </div>
     </section>
 
     <section class="card">
@@ -335,11 +341,11 @@
     thursday_dinner: "Informal dinner, Thu 1 April", friday_dinner: "Conference dinner, Fri 2 April",
     hotel_thursday: "Hotel, night of Thu 1 April", hotel_friday: "Hotel, night of Fri 2 April",
     travel: "Travel reimbursement", travel_from: "Travelling from",
-    dietary: "Dietary notes", comments: "Message",
+    dietary: "Dietary notes", comments: "Message", bio: "Short bio",
   };
   const WORDS = { attending: "Attending", not_attending: "Not attending", need_room: "Room needed", no_room: "No room needed", request: "Requested", not_needed: "Not needed" };
   const CHOICES = { thursday_dinner: ["attending", "not_attending"], friday_dinner: ["attending", "not_attending"], hotel_thursday: ["need_room", "no_room"], hotel_friday: ["need_room", "no_room"], travel: ["request", "not_needed"] };
-  const TEXT = { travel_from: 300, dietary: 2000, comments: 4000 };
+  const TEXT = { travel_from: 300, dietary: 2000, comments: 4000, bio: 1200 };
 
   // Show the real addresses in the pointer cards, whatever domain the page is served from.
   try {
@@ -432,7 +438,7 @@
     const sum = document.getElementById("summary");
     sum.innerHTML = "";
     const rows = [["name", d.name], ["email", d.email], ...Object.keys(CHOICES).map(k => [k, WORDS[d[k]]]),
-      ["travel_from", d.travel_from || "Not given"], ["dietary", d.dietary || "None given"], ["comments", d.comments || "None"]];
+      ["travel_from", d.travel_from || "Not given"], ["dietary", d.dietary || "None given"], ["comments", d.comments || "None"], ["bio", d.bio || "Not given"]];
     for (const [k, v] of rows) {
       const el = document.createElement("div");
       const kk = document.createElement("div"); kk.className = "k"; kk.textContent = LABELS[k];
