@@ -178,6 +178,7 @@
   .spk .nm { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.15; }
   .spk .af { font-size: 13px; color: var(--muted); }
   .spk .bio { font-size: 13.5px; margin-top: 4px; }
+  .tbc.ok { background: var(--plenary); color: var(--plenary-ink); }
   .tbc { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--keynote-ink); background: var(--keynote); border-radius: 999px; padding: 3px 8px; }
   .nextprev { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
   .nextprev a { font-size: 14px; text-decoration: none; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); max-width: 48%; }
@@ -205,9 +206,7 @@
   ];
   // Shown on the Speakers page with a "to be confirmed" caveat; nobody is attached to a session until confirmed.
   const SPEAKERS_TBC = [
-    { n: "Jack M. Balkin", a: "Yale Law School", b: "Knight Professor of Constitutional Law and the First Amendment; Director of the Information Society Project." },
-    { n: "Susan Rose-Ackerman", a: "Yale Law School", b: "Leading scholar of corruption, comparative administrative law and the political economy of government." },
-    { n: "Amy Kapczynski", a: "Yale Law School", b: "Co-director of the Law and Political Economy Project; writes on knowledge institutions, health and information." },
+    { n: "Jack M. Balkin", a: "Yale Law School", b: "Knight Professor of Constitutional Law and the First Amendment; Director of the Information Society Project.", confirmed: true },
     { n: "Cristina Rodríguez", a: "Yale Law School", b: "Co-chair of the 2021 Presidential Commission on the Supreme Court; scholar of immigration and constitutional law." },
   ];
   const EVENTS = [
@@ -421,9 +420,9 @@
   }
 
   function speakersPage() {
-    const cards = SPEAKERS_TBC.map(p => `<div class="spk"><div class="ava" style="--ava-bg:var(--sky-12)"><div class="disc">${esc(initials(p.n))}</div></div><div style="min-width:0"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="bio">${esc(p.b)}</div><div class="tbc">To be confirmed</div></div></div>`).join("");
+    const cards = SPEAKERS_TBC.map(p => `<div class="spk"><div class="ava" style="--ava-bg:var(--sky-12)"><div class="disc">${esc(initials(p.n))}</div></div><div style="min-width:0"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="bio">${esc(p.b)}</div><div class="tbc${p.confirmed ? " ok" : ""}">${p.confirmed ? "Confirmed" : "To be confirmed"}</div></div></div>`).join("");
     return `<div class="eyebrow">Participants</div><h1 style="margin-bottom:8px">Speakers</h1>
-      <p class="lede muted" style="margin-bottom:18px">Invitations are under way. Participants will be listed here, with their sessions, as they confirm. Among the Yale Law School faculty expected to take part:</p>
+      <p class="lede muted" style="margin-bottom:18px">Invitations are under way. Participants will be listed here, with their sessions, as they confirm. From Yale Law School:</p>
       <div class="speakers two-col">${cards}</div>
       <div class="tba" style="margin-top:18px"><p>Panelists from across the legal academy, government and civil society have been invited for every session. Names and sessions will appear here once confirmed.</p><p class="muted">Programme and participants subject to change.</p></div>`;
   }
