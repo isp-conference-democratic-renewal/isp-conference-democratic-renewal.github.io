@@ -88,8 +88,14 @@
   .flourish { display: flex; align-items: center; gap: 12px; justify-content: center; margin: 24px 0; color: var(--gold); }
   .flourish::before, .flourish::after { content: ""; height: 1px; width: 64px; background: currentColor; opacity: 0.7; }
   .flourish i { font-family: var(--serif); font-style: italic; font-size: 14px; letter-spacing: 0.1em; }
-  .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; border-radius: 10px; padding: 14px 18px; margin: 0 0 26px; color: var(--ink);
-    background: linear-gradient(90deg, var(--sky-9) 0%, var(--sky-12) 40%, var(--sky-15) 60%, var(--sky-17) 85%, var(--sky-1830) 100%); }
+  .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; border-radius: 10px; padding: 14px 18px; margin: 0 0 18px; color: var(--ink);
+    background: linear-gradient(90deg, var(--sky-9) 0%, var(--sky-12) 55%, #b9d0ea 100%); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ribbon { background: linear-gradient(90deg, #22364d 0%, #2f5079 60%, #3c6494 100%); } }
+  :root[data-theme="dark"] .ribbon { background: linear-gradient(90deg, #22364d 0%, #2f5079 60%, #3c6494 100%); }
+  .cta { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; background: var(--yale); color: #fff; border-radius: 10px; padding: 12px 16px; margin: 0 0 26px; }
+  .cta p { font-size: 15px; }
+  .cta .btn { background: #fff; color: var(--yale); }
+  .letter .cta { margin: 8px 0 0; }
   .ribbon b { font-family: var(--serif); font-weight: 600; font-size: 22px; }
   .ribbon span { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; }
   .letter { font-family: var(--serif); font-size: 17.5px; line-height: 1.6; display: grid; gap: 16px; max-width: 62ch; margin: 0 auto; font-variation-settings: "opsz" 14; }
@@ -176,18 +182,19 @@
     <div class="flourish" aria-hidden="true"><i>Invitation</i></div>
     <div class="ribbon" aria-label="Dates and venue"><b>April 2–3, 2027</b><span>Yale Law School · New Haven, Connecticut</span></div>
 
+    <div class="cta" role="note"><p><b>Please reply using the short form further down this page.</b> It takes about two minutes.</p><a class="btn" href="#rsvp">Go to the reply form ↓</a></div>
+
     <div class="letter">
       <p class="salute">Dear Colleague,</p>
-      <p>Yale Law School's new Center on the Constitution and Rule of Law (CAROL) invites you to join us as a speaker at its inaugural symposium, <em>Democratic Decline and Renewal</em>, on April 2–3, 2027, at Yale Law School in New Haven, Connecticut.</p>
-      <p>CAROL's work is a corollary to the important work already going on at the Information Society Project, Yale Law School's center on law and technology. It seeks to lay the groundwork for renewed academic and public focus on constitutional constraints, and to build scholarship and discourse on reviving our fundamental constitutional values.</p>
-      <p>The symposium will bring together prominent scholars from across the legal academy and leaders in the legal profession with experience working in government and for public-interest nonprofits. Together, the participants will address urgent questions of how to confront democratic backsliding and threats to our constitutional order, with panels focused on providing concrete solutions. In particular, we would love for you to serve as a speaker.</p>
-      <p>Each panel will address a specific theme. We ask that contributors prepare short papers (1,000–1,500 words) for circulation by March 24. These will provide material for commentators to draw out common points and questions, and form the basis of a shared dialogue among the panelists, members of the Yale Law School community, and invited guests.</p>
-      <p>Thanks to the Oscar M. Ruebhausen Fund, we are able to cover reasonable transportation expenses in accordance with Yale policy and two nights' accommodation in New Haven. We are also pleased to provide conference meals, including an informal dinner on Thursday, April 1, and a conference dinner on Friday, April 2. Please let us know below, within two weeks of receiving this invitation, whether you will be able to join us.</p>
-      <p>Please do not hesitate to reach out with any questions. We hope you can join us.</p>
+      <p>Yale Law School's new Center on the Constitution and Rule of Law (CAROL) invites you to speak at its inaugural symposium, <em>Democratic Decline and Renewal</em>, on April 2–3, 2027, at Yale Law School in New Haven. The symposium brings together scholars, leaders in the legal profession and public-interest advocates to confront democratic backsliding with concrete solutions, and we would love to feature your voice.</p>
+      <p>Each panel addresses a specific theme. We ask contributors for a short paper (1,000–1,500 words) for circulation by March 24, as the basis for a shared dialogue among the panelists, the Yale Law School community and invited guests.</p>
+      <p>Thanks to the Oscar M. Ruebhausen Fund, we cover reasonable transportation expenses in accordance with Yale policy, two nights' accommodation in New Haven and conference meals, including an informal dinner on Thursday, April 1, and the conference dinner on Friday, April 2.</p>
+      <p>Please let us know whether you can join us by completing the form below. We hope you can.</p>
       <div class="sign">
         <p>Sincerely,</p>
         <p class="names">Jack M. Balkin, Genevieve Scott, Caleb Yong, Laura Matta and Henry Bradley<br>Yale Law School</p>
       </div>
+      <div class="cta"><p><b>Your reply is just below.</b> Dinners, hotel nights, travel and a short bio.</p><a class="btn" href="#rsvp">Fill in the form ↓</a></div>
       <p class="fine">This is an invitation-only, closed-door event. The invitation is not transferable; please let us know if there are colleagues you would like us to include.</p>
     </div>
 
@@ -356,6 +363,7 @@
   } catch (e) {}
 
   const form = document.getElementById("rsvp");
+  document.querySelectorAll('a[href="#rsvp"]').forEach(a => a.addEventListener("click", e => { e.preventDefault(); document.querySelector(".reply-head").scrollIntoView({ behavior: "smooth", block: "start" }); setTimeout(() => document.getElementById("name").focus({ preventScroll: true }), 600); }));
   const notice = document.getElementById("notice");
   const send = document.getElementById("send");
   const done = document.getElementById("done");
