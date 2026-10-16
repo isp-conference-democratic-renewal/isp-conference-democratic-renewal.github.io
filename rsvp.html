@@ -185,10 +185,10 @@
       </section>
 
       <section class="card">
-        <div class="card-head"><span class="num">2</span><div><h2>Dinners</h2><p>Two evenings, both optional. Say yes to either, both, or neither.</p></div></div>
+        <div class="card-head"><span class="num">2</span><div><h2>Dinners</h2><p>Two evenings, both optional. Thursday is an informal dinner the evening before we open; Friday's conference dinner follows the keynote and cocktails.</p></div></div>
         <div class="two">
           <fieldset class="field" id="f-thursday_dinner" aria-describedby="e-thursday_dinner">
-            <legend>Informal Thursday night dinner <span class="req" aria-hidden="true">*</span></legend>
+            <legend>Informal dinner · Thursday, April 1 <span class="req" aria-hidden="true">*</span></legend>
             <div class="opts">
               <label class="opt"><input type="radio" name="thursday_dinner" value="attending" required><span class="box">Attending</span></label>
               <label class="opt"><input type="radio" name="thursday_dinner" value="not_attending"><span class="box">Not attending</span></label>
@@ -196,7 +196,7 @@
             <span class="err" id="e-thursday_dinner">Please choose one.</span>
           </fieldset>
           <fieldset class="field" id="f-friday_dinner" aria-describedby="e-friday_dinner">
-            <legend>Friday night dinner <span class="req" aria-hidden="true">*</span></legend>
+            <legend>Conference dinner · Friday, April 2 <span class="req" aria-hidden="true">*</span></legend>
             <div class="opts">
               <label class="opt"><input type="radio" name="friday_dinner" value="attending" required><span class="box">Attending</span></label>
               <label class="opt"><input type="radio" name="friday_dinner" value="not_attending"><span class="box">Not attending</span></label>
@@ -210,7 +210,7 @@
         <div class="card-head"><span class="num">3</span><div><h2>Hotel</h2><p>Let us know which nights you need a room.</p></div></div>
         <div class="two">
           <fieldset class="field" id="f-hotel_thursday" aria-describedby="e-hotel_thursday">
-            <legend>Thursday night <span class="req" aria-hidden="true">*</span></legend>
+            <legend>Night of Thursday, April 1 <span class="req" aria-hidden="true">*</span></legend>
             <div class="opts">
               <label class="opt"><input type="radio" name="hotel_thursday" value="need_room" required><span class="box">I need a hotel room</span></label>
               <label class="opt"><input type="radio" name="hotel_thursday" value="no_room"><span class="box">I do not need a room</span></label>
@@ -218,7 +218,7 @@
             <span class="err" id="e-hotel_thursday">Please choose one.</span>
           </fieldset>
           <fieldset class="field" id="f-hotel_friday" aria-describedby="e-hotel_friday">
-            <legend>Friday night <span class="req" aria-hidden="true">*</span></legend>
+            <legend>Night of Friday, April 2 <span class="req" aria-hidden="true">*</span></legend>
             <div class="opts">
               <label class="opt"><input type="radio" name="hotel_friday" value="need_room" required><span class="box">I need a hotel room</span></label>
               <label class="opt"><input type="radio" name="hotel_friday" value="no_room"><span class="box">I do not need a room</span></label>
@@ -257,7 +257,7 @@
       <div class="card">
         <div class="k">Before you reply</div>
         <ul>
-          <li>Thursday's dinner is informal; Friday's is the conference dinner.</li>
+          <li>The conference runs Friday 2 and Saturday 3 April and closes at 2:00 pm on Saturday.</li>
           <li>Tell us about both hotel nights even if you only need one.</li>
           <li>Plans change? Send the form again. Your latest reply replaces the earlier one.</li>
         </ul>
@@ -284,8 +284,8 @@
 
   const LABELS = {
     name: "Name", email: "Email",
-    thursday_dinner: "Thursday dinner", friday_dinner: "Friday dinner",
-    hotel_thursday: "Hotel, Thursday", hotel_friday: "Hotel, Friday",
+    thursday_dinner: "Dinner, Thu 1 April", friday_dinner: "Dinner, Fri 2 April",
+    hotel_thursday: "Hotel, night of Thu 1 April", hotel_friday: "Hotel, night of Fri 2 April",
     dietary: "Dietary notes",
   };
   const WORDS = { attending: "Attending", not_attending: "Not attending", need_room: "Room needed", no_room: "No room needed" };
