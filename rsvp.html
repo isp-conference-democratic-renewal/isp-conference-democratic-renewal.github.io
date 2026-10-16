@@ -225,14 +225,26 @@
   <div class="reply-head">
     <div class="eyebrow">Your reply</div>
     <h2>Will you join us?</h2>
-    <p class="muted">A few questions so we can plan the dinners, the hotel and your travel. It takes about two minutes, and you can send the form again if your plans change.</p>
+    <p class="muted">Tell us whether you can come, then a few questions so we can plan the dinners, the hotel and your travel. It takes about two minutes, and you can send the form again if your plans change.</p>
   </div>
 
   <form id="rsvp" novalidate autocomplete="on">
     <div id="notice" class="notice" role="alert"></div>
 
     <section class="card">
-      <div class="card-head"><span class="num">i</span><div><h3>About you</h3><p>So we know who is replying and how to reach you.</p></div></div>
+      <div class="card-head"><span class="num">i</span><div><h3>Will you be able to join us?</h3><p>One answer, so we can confirm your place.</p></div></div>
+      <fieldset class="field" id="f-attending" aria-describedby="e-attending">
+        <legend class="vh">Will you be able to join us?</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="attending" value="yes" required><span class="box">Yes, I accept with pleasure</span></label>
+          <label class="opt"><input type="radio" name="attending" value="no"><span class="box">No, I am unable to attend</span></label>
+        </div>
+        <span class="err" id="e-attending">Please choose one.</span>
+      </fieldset>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><span class="num">ii</span><div><h3>About you</h3><p>So we know who is replying and how to reach you.</p></div></div>
       <div class="two">
         <div class="field" id="f-name">
           <label for="name">Full name <span class="req" aria-hidden="true">*</span></label>
@@ -254,7 +266,7 @@
     </section>
 
     <section class="card">
-      <div class="card-head"><span class="num">ii</span><div><h3>Dinners</h3><p>Arrive on Thursday evening for an informal dinner and avoid an early journey; the conference dinner follows Friday's keynote and cocktails.</p></div></div>
+      <div class="card-head"><span class="num">iii</span><div><h3>Dinners</h3><p>Arrive on Thursday evening for an informal dinner and avoid an early journey; the conference dinner follows Friday's keynote and cocktails.</p></div></div>
       <div class="two">
         <fieldset class="field" id="f-thursday_dinner" aria-describedby="e-thursday_dinner">
           <legend>Informal dinner · Thursday, April 1 <span class="req" aria-hidden="true">*</span></legend>
@@ -276,7 +288,7 @@
     </section>
 
     <section class="card">
-      <div class="card-head"><span class="num">iii</span><div><h3>Hotel</h3><p>Two nights in New Haven are covered: Thursday, so you can be here for Friday morning, and Friday. Tell us which you need.</p></div></div>
+      <div class="card-head"><span class="num">iv</span><div><h3>Hotel</h3><p>Two nights in New Haven are covered: Thursday, so you can be here for Friday morning, and Friday. Tell us which you need.</p></div></div>
       <div class="two">
         <fieldset class="field" id="f-hotel_thursday" aria-describedby="e-hotel_thursday">
           <legend>Night of Thursday, April 1 <span class="req" aria-hidden="true">*</span></legend>
@@ -298,7 +310,7 @@
     </section>
 
     <section class="card">
-      <div class="card-head"><span class="num">iv</span><div><h3>Travel</h3><p>Reasonable transportation expenses are covered in accordance with Yale policy.</p></div></div>
+      <div class="card-head"><span class="num">v</span><div><h3>Travel</h3><p>Reasonable transportation expenses are covered in accordance with Yale policy.</p></div></div>
       <div class="two">
         <fieldset class="field" id="f-travel" aria-describedby="e-travel">
           <legend>Reimbursement of travel expenses <span class="req" aria-hidden="true">*</span></legend>
@@ -317,7 +329,7 @@
     </section>
 
     <section class="card">
-      <div class="card-head"><span class="num">v</span><div><h3>Dietary restrictions and allergies</h3><p>Optional. We pass this on to the caterers.</p></div></div>
+      <div class="card-head"><span class="num">vi</span><div><h3>Dietary restrictions and allergies</h3><p>Optional. We pass this on to the caterers.</p></div></div>
       <div class="field" id="f-dietary">
         <label for="dietary">Anything we should know?</label>
         <textarea id="dietary" name="dietary" maxlength="2000" placeholder="For example: vegetarian, vegan, gluten-free, halal, kosher, a nut allergy." aria-describedby="h-dietary e-dietary"></textarea>
@@ -327,7 +339,7 @@
     </section>
 
     <section class="card">
-      <div class="card-head"><span class="num">vi</span><div><h3>Anything else</h3><p>Questions, constraints, colleagues you would like us to include. Optional.</p></div></div>
+      <div class="card-head"><span class="num">vii</span><div><h3>Anything else</h3><p>Questions, constraints, colleagues you would like us to include. Optional.</p></div></div>
       <div class="field" id="f-comments">
         <label for="comments">Your message to the organizers</label>
         <textarea id="comments" name="comments" maxlength="4000" aria-describedby="e-comments"></textarea>
@@ -362,14 +374,15 @@
   const RSVP_ENDPOINT = "https://script.google.com/macros/s/AKfycbw8S3wtmnfvgbeBC5LCxydR_ulOVKdQfOBcB_k8y7DtSuwk3KlPDevHL0B8Mv1ngcjbDg/exec";
 
   const LABELS = {
-    name: "Name", email: "Email",
+    attending: "Joining us", name: "Name", email: "Email",
     thursday_dinner: "Informal dinner, Thu 1 April", friday_dinner: "Conference dinner, Fri 2 April",
     hotel_thursday: "Hotel, night of Thu 1 April", hotel_friday: "Hotel, night of Fri 2 April",
     travel: "Travel reimbursement", travel_from: "Traveling from",
     dietary: "Dietary notes", comments: "Message", bio: "Short bio",
   };
-  const WORDS = { attending: "Attending", not_attending: "Not attending", need_room: "Room needed", no_room: "No room needed", request: "Requested", not_needed: "Not needed" };
-  const CHOICES = { thursday_dinner: ["attending", "not_attending"], friday_dinner: ["attending", "not_attending"], hotel_thursday: ["need_room", "no_room"], hotel_friday: ["need_room", "no_room"], travel: ["request", "not_needed"] };
+  const WORDS = { yes: "Yes", no: "No", attending: "Attending", not_attending: "Not attending", need_room: "Room needed", no_room: "No room needed", request: "Requested", not_needed: "Not needed" };
+  const CHOICES = { attending: ["yes", "no"], thursday_dinner: ["attending", "not_attending"], friday_dinner: ["attending", "not_attending"], hotel_thursday: ["need_room", "no_room"], hotel_friday: ["need_room", "no_room"], travel: ["request", "not_needed"] };
+  const LOGISTICS = ["thursday_dinner", "friday_dinner", "hotel_thursday", "hotel_friday", "travel"];   // only asked of those who accept
   const TEXT = { travel_from: 300, dietary: 2000, comments: 4000, bio: 1200 };
 
   // Show the real addresses in the pointer cards, whatever domain the page is served from.
@@ -409,7 +422,8 @@
     const bad = [];
     if (d.name.length < 1 || d.name.length > 200) bad.push("name");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email) || d.email.length > 254) bad.push("email");
-    for (const [k, options] of Object.entries(CHOICES)) if (!options.includes(d[k])) bad.push(k);
+    const declining = d.attending === "no";
+    for (const [k, options] of Object.entries(CHOICES)) { if (declining && LOGISTICS.includes(k)) { if (d[k] && !options.includes(d[k])) bad.push(k); continue; } if (!options.includes(d[k])) bad.push(k); }
     for (const [k, max] of Object.entries(TEXT)) if (d[k].length > max) bad.push(k);
     for (const k of ["name", "email", ...Object.keys(CHOICES), ...Object.keys(TEXT)]) mark(k, bad.includes(k));
     return bad;
@@ -465,7 +479,7 @@
   function finish(d) {
     const sum = document.getElementById("summary");
     sum.innerHTML = "";
-    const rows = [["name", d.name], ["email", d.email], ...Object.keys(CHOICES).map(k => [k, WORDS[d[k]]]),
+    const rows = [["attending", WORDS[d.attending]], ["name", d.name], ["email", d.email], ...Object.keys(CHOICES).filter(k => k !== "attending" && !(d.attending === "no" && LOGISTICS.includes(k))).map(k => [k, WORDS[d[k]] || "Not asked"]),
       ["travel_from", d.travel_from || "Not given"], ["dietary", d.dietary || "None given"], ["comments", d.comments || "None"], ["bio", d.bio || "Not given"]];
     for (const [k, v] of rows) {
       const el = document.createElement("div");
@@ -485,6 +499,13 @@
     document.querySelector(".reply-head").scrollIntoView({ block: "start" });
     document.getElementById("name").focus();
   });
+
+  // When someone declines, the dinner, hotel and travel cards fold away.
+  function foldLogistics() {
+    const no = form.querySelector('input[name="attending"][value="no"]').checked;
+    for (const k of LOGISTICS) { const card = field(k).closest("section.card"); if (card) card.hidden = no; }
+  }
+  form.querySelectorAll('input[name="attending"]').forEach(r => r.addEventListener("change", foldLogistics));
 
   form.addEventListener("input", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
   form.addEventListener("change", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
