@@ -154,6 +154,13 @@
   .invalid .err { display: block; }
   .invalid input[type="text"], .invalid input[type="email"], .invalid textarea, .invalid .opt .box { border-color: var(--bad); }
 
+  input[type="file"] { font: inherit; font-size: 14px; color: var(--muted); width: 100%; }
+  input[type="file"]::file-selector-button { font: inherit; font-weight: 600; font-size: 13.5px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); margin-right: 10px; cursor: pointer; }
+  .filecard { display: flex; gap: 12px; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .filecard img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex: none; background: var(--line); }
+  .filecard .fn { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+  .filecard .fs { font-size: 12.5px; color: var(--muted); }
+  .linklike { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--accent); text-decoration: underline; cursor: pointer; }
   .submit-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 6px 4px 0; }
   .submit-row .btn { padding: 13px 26px; font-size: 15px; }
   .privacy { font-size: 13px; color: var(--muted); max-width: 48ch; }
@@ -199,7 +206,7 @@
     <div class="letter">
       <p class="salute">Dear Colleague,</p>
       <p>Yale Law School's new Center on the Constitution and Rule of Law (CAROL) invites you to speak at its inaugural symposium, <em>Democratic Decline and Renewal</em>, on April 2–3, 2027, at Yale Law School in New Haven, Connecticut. CAROL builds on the work of the Information Society Project to renew academic and public focus on constitutional constraints, and the symposium brings together scholars, leaders in the legal profession and public-interest advocates to confront democratic backsliding with concrete solutions.</p>
-      <p>Each panel addresses a specific theme, and we ask every contributor for a short paper of 1,000–1,500 words for circulation by March 24, 2027. Please let us know whether you can join us by completing the form below.</p>
+      <p>Each panel addresses a specific theme, and we ask every contributor for a short paper of 1,000–1,500 words for circulation by March 24, 2027. You can submit it at any time between now and then through the <a href="paper.html"><b>Submit your paper</b></a> tab at the top of this page. Please let us know whether you can join us by completing the form below.</p>
       <div class="sign">
         <p>Sincerely,</p>
         <p class="names">Jack M. Balkin, Genevieve Scott, Caleb Yong, Laura Matta and Henry Bradley<br>Yale Law School</p>
@@ -211,6 +218,7 @@
     <div class="pointers">
       <a href="index.html#home"><span class="k">About the conference</span><span class="t">You can read more about the conference here</span><span class="u" id="u-home">lauraamatta.github.io/isp-conference-site</span></a>
       <a href="index.html#schedule"><span class="k">Program</span><span class="t">And the full two-day program here</span><span class="u" id="u-schedule">lauraamatta.github.io/isp-conference-site/#schedule</span></a>
+      <a href="paper.html"><span class="k">Your paper · any time until March 24, 2027</span><span class="t">Submit your short paper here, now or later</span><span class="u" id="u-paper">lauraamatta.github.io/isp-conference-site/paper.html</span></a>
     </div>
   </section>
 
@@ -370,6 +378,7 @@
     const pretty = u => u.replace(/^https?:\/\//, "").replace(/\/index\.html/, "/");
     document.getElementById("u-home").textContent = pretty(base.href);
     document.getElementById("u-schedule").textContent = pretty(base.href + "#schedule");
+    document.getElementById("u-paper").textContent = pretty(new URL("paper.html", location.href).href);
   } catch (e) {}
 
   const form = document.getElementById("rsvp");
@@ -394,6 +403,7 @@
     for (const k of Object.keys(TEXT)) data[k] = clean(fd.get(k));
     return data;
   }
+
 
   function validate(d) {
     const bad = [];
