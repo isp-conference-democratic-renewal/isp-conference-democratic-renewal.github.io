@@ -6,7 +6,7 @@
 <title>Democratic Decline and Renewal</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-  /* Layout: a small conference site. Home (what and why), Schedule (the sky-backed time grid, every block a link), one page per session. Participants are not listed until they have confirmed. Hash routing, one file. RSVP lives in rsvp.html. */
+  /* Layout: a small conference site. Home (what and why), Schedule (the sky-backed time grid, every block a link), one page per session. Speakers are shown as to be confirmed until they have confirmed. Hash routing, one file. The invitation and RSVP page (rsvp.html) is deliberately not linked from here. */
   :root {
     --bg: #f6f8fb;
     --paper: #ffffff;
@@ -172,6 +172,13 @@
   .ask div { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 13px; }
   .ask div b { display: block; font-family: var(--display); font-size: 15px; color: var(--accent); }
   .tba { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; font-size: 14.5px; }
+  .speakers { display: grid; gap: 10px; }
+  .speakers.two-col { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+  .spk { display: flex; gap: 14px; align-items: flex-start; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0; }
+  .spk .nm { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.15; }
+  .spk .af { font-size: 13px; color: var(--muted); }
+  .spk .bio { font-size: 13.5px; margin-top: 4px; }
+  .tbc { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--keynote-ink); background: var(--keynote); border-radius: 999px; padding: 3px 8px; }
   .nextprev { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
   .nextprev a { font-size: 14px; text-decoration: none; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); max-width: 48%; }
   .nextprev a span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -185,7 +192,7 @@
 <div class="yls"><div class="bar-in"><a href="https://law.yale.edu" target="_blank" rel="noopener"><img src="assets/yls-logo.png" alt="Yale Law School"></a></div></div>
 <div class="bar"><div class="bar-in">
   <a class="mark" href="#home" aria-label="Home"><img src="assets/isp-logo.png" alt="Information Society Project, Yale Law School"></a>
-  <nav id="nav"><a href="#home">Home</a><a href="#schedule">Schedule</a><a href="rsvp.html">RSVP</a></nav>
+  <nav id="nav"><a href="#home">Home</a><a href="#schedule">Schedule</a><a href="#speakers">Speakers</a></nav>
 </div></div>
 
 <div class="wrap" id="app"></div>
@@ -195,6 +202,13 @@
   const DAYS = [
     { id: 1, name: "Day 1", when: "Friday, April 2, 2027", start: 9 * 60, end: 19 * 60 + 45 },
     { id: 2, name: "Day 2", when: "Saturday, April 3, 2027", start: 9 * 60, end: 14 * 60 + 15 },
+  ];
+  // Shown on the Speakers page with a "to be confirmed" caveat; nobody is attached to a session until confirmed.
+  const SPEAKERS_TBC = [
+    { n: "Jack M. Balkin", a: "Yale Law School", b: "Knight Professor of Constitutional Law and the First Amendment; Director of the Information Society Project." },
+    { n: "Susan Rose-Ackerman", a: "Yale Law School", b: "Leading scholar of corruption, comparative administrative law and the political economy of government." },
+    { n: "Amy Kapczynski", a: "Yale Law School", b: "Co-director of the Law and Political Economy Project; writes on knowledge institutions, health and information." },
+    { n: "Cristina Rodríguez", a: "Yale Law School", b: "Co-chair of the 2021 Presidential Commission on the Supreme Court; scholar of immigration and constitutional law." },
   ];
   const EVENTS = [
     { id: "executive-power", day: 1, s: 540, e: 630, kind: "plenary", k: "Plenary", n: "Reforming Executive Power", sub: "Reforming the Justice Department",
@@ -267,7 +281,7 @@
       <div class="eyebrow">Information Society Project · Yale Law School · Spring Conference 2027</div>
       <h1>Democratic Decline and Renewal in the Digital Age</h1>
       <p class="lede">Two days on how democracies erode, and what it would take to repair them. Not a catalogue of what is broken: every session ends with a proposal.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="rsvp.html">RSVP</a></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="#speakers">Speakers</a></div>
     </section>
     <div class="ribbon" aria-label="Dates and venue"><b>April 2–3, 2027</b><span>Yale Law School · New Haven, Connecticut</span></div>
 
@@ -397,13 +411,21 @@
         ${isPanel && ev.kind !== "keynote" ? `<div class="ask"><div><b>What could change?</b>Each paper names a reform.</div><div><b>Who could act?</b>And the institution that would carry it.</div><div><b>How would it work?</b>When the usual checks push back.</div></div>` : ""}
       </div>
       <div>
-        ${isPanel ? `<h2>Participants</h2><div class="tba"><p>${ev.kind === "keynote" ? "The conversation partners" : "The panelists"} will be announced here once confirmed.</p><p class="muted">Invited participants: <a href="rsvp.html">reply to your invitation</a>.</p></div>` : ""}
+        ${isPanel ? `<h2>Participants</h2><div class="tba"><p>${ev.kind === "keynote" ? "The conversation partners" : "The panelists"} will be announced here once confirmed.</p></div>` : ""}
       </div>
     </div>
     <div class="nextprev">
       ${prev ? `<a href="#${prev.id}"><span>Previous</span>${esc(prev.n)}</a>` : "<span></span>"}
       ${next ? `<a href="#${next.id}" style="text-align:right"><span>Next</span>${esc(next.n)}</a>` : ""}
     </div>`;
+  }
+
+  function speakersPage() {
+    const cards = SPEAKERS_TBC.map(p => `<div class="spk"><div class="ava" style="--ava-bg:var(--sky-12)"><div class="disc">${esc(initials(p.n))}</div></div><div style="min-width:0"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="bio">${esc(p.b)}</div><div class="tbc">To be confirmed</div></div></div>`).join("");
+    return `<div class="eyebrow">Participants</div><h1 style="margin-bottom:8px">Speakers</h1>
+      <p class="lede muted" style="margin-bottom:18px">Invitations are under way. Participants will be listed here, with their sessions, as they confirm. Among the Yale Law School faculty expected to take part:</p>
+      <div class="speakers two-col">${cards}</div>
+      <div class="tba" style="margin-top:18px"><p>Panelists from across the legal academy, government and civil society have been invited for every session. Names and sessions will appear here once confirmed.</p><p class="muted">Programme and participants subject to change.</p></div>`;
   }
 
   // ---------- router: in-page links switch views here, without leaving the page ----------
@@ -413,7 +435,7 @@
     const app = document.getElementById("app");
     let page = "home";
     if (h === "schedule") { app.innerHTML = schedule(); buildGrid(); page = "schedule"; }
-    else if (h === "speakers") { app.innerHTML = schedule(); buildGrid(); page = "schedule"; }
+    else if (h === "speakers") { app.innerHTML = speakersPage(); page = "speakers"; }
     else if (sessionOf(h)) { app.innerHTML = eventPage(sessionOf(h)); page = "schedule"; }
     else { app.innerHTML = home(); }
     app.insertAdjacentHTML("beforeend", `<footer><span>Information Society Project · Yale Law School · 127 Wall Street, New Haven, CT 06511</span><span>Programme and participants subject to change</span></footer>`);
