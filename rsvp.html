@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RSVP · Democratic Decline and Renewal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* The RSVP page of the conference site. Same tokens and chrome as index.html; the form posts to a small relay that files each reply in the organisers' private repository. Nothing is stored in the browser. */
+  :root {
+    --bg: #f6f8fb;
+    --paper: #ffffff;
+    --ink: #1e2a38;
+    --muted: #5e6b7a;
+    --line: #d9e1ea;
+    --yale: #00356b;
+    --accent: #2a6ebb;
+    --plenary: #3b6ea8;
+    --plenary-ink: #ffffff;
+    --keynote: #f5e4bf;
+    --keynote-ink: #4a3a12;
+    --ok: #2f7d4f;
+    --ok-bg: #e4f3ea;
+    --bad: #b3261e;
+    --bad-bg: #fbe9e7;
+    --sky-9: #eef4fa; --sky-12: #d2e5f6; --sky-15: #dae4ee; --sky-17: #f7e8cb; --sky-1830: #e3d3dd;
+    --display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+    --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
+      --plenary: #7aa6d9; --plenary-ink: #0b1a2e; --accent: #9dbbe0;
+      --keynote: #cdb27a; --keynote-ink: #1f1600;
+      --ok: #8fd3a8; --ok-bg: #1f3a2a; --bad: #f2a69e; --bad-bg: #3d1f1c;
+      --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141a21; --paper: #1b232c; --ink: #e8edf2; --muted: #9aa8b6; --line: #2f3a46;
+    --plenary: #7aa6d9; --plenary-ink: #0b1a2e; --accent: #9dbbe0;
+    --keynote: #cdb27a; --keynote-ink: #1f1600;
+    --ok: #8fd3a8; --ok-bg: #1f3a2a; --bad: #f2a69e; --bad-bg: #3d1f1c;
+    --sky-9: #2a3b4d; --sky-12: #3c5f85; --sky-15: #394e66; --sky-17: #6b5230; --sky-1830: #4f3a4d;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.45; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-block: 24px 56px; padding-inline: 16px; }
+
+  /* ---- top: YLS strip, then the ISP band in Yale blue ---- */
+  .yls { background: #ffffff; border-bottom: 1px solid #dfe5ec; }
+  .yls .bar-in { padding: 9px 16px; }
+  .yls img { height: 26px; width: auto; display: block; }
+  .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--yale); color: #fff; }
+  .bar-in { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .mark { display: flex; align-items: center; text-decoration: none; }
+  .mark img { height: 40px; width: auto; display: block; }
+  nav { display: flex; gap: 2px; }
+  nav a { text-decoration: none; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 12px; color: rgba(255,255,255,0.82); border-bottom: 2px solid transparent; }
+  nav a.on, nav a:hover { color: #fff; border-bottom-color: #63aaff; }
+  nav a:focus-visible, .btn:focus-visible { outline: 2px solid #63aaff; outline-offset: 2px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 56px); line-height: 0.98; margin: 0; letter-spacing: -0.01em; text-wrap: balance; max-width: 16ch; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.1; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .lede { font-size: 17px; max-width: 62ch; }
+  .muted { color: var(--muted); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 999px; background: var(--plenary); color: var(--plenary-ink); border: 0; font-family: var(--body); cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn:disabled { opacity: 0.6; cursor: progress; }
+
+  .hero { display: grid; gap: 18px; margin-bottom: 22px; max-width: 760px; }
+  .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; border-radius: 10px; padding: 14px 18px; margin-bottom: 28px; color: var(--ink);
+    background: linear-gradient(90deg, var(--sky-9) 0%, var(--sky-12) 40%, var(--sky-15) 60%, var(--sky-17) 85%, var(--sky-1830) 100%); }
+  .ribbon b { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.01em; }
+  .ribbon span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ribbon .btn { background: rgba(255,255,255,0.7); color: #1e2a38; border: 1px solid rgba(30,42,56,0.15); }
+
+  /* ---- the form: numbered cards, one topic each ---- */
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .aside { order: -1; } }
+  form { display: grid; gap: 16px; min-width: 0; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px 22px; display: grid; gap: 16px; }
+  .card-head { display: flex; align-items: baseline; gap: 12px; }
+  .card-head .num { font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--accent); flex: none; width: 28px; }
+  .card-head p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .field { display: grid; gap: 6px; }
+  .field label, legend { font-weight: 600; font-size: 15px; }
+  .hint { font-size: 13px; color: var(--muted); }
+  .req { color: var(--accent); font-weight: 600; }
+  input[type="text"], input[type="email"], textarea {
+    font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; width: 100%; max-width: 520px; }
+  textarea { max-width: none; min-height: 96px; resize: vertical; }
+  input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 20px; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 8px; }
+  legend { padding: 0; margin-bottom: 2px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opt { position: relative; display: block; cursor: pointer; }
+  .opt input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .opt .box { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: var(--bg); font-size: 14.5px; line-height: 1.25; transition: background .15s ease, border-color .15s ease; min-height: 48px; }
+  .opt .box::before { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--muted); flex: none; box-sizing: border-box; }
+  .opt:hover .box { border-color: var(--accent); }
+  .opt input:checked ~ .box { background: var(--plenary); color: var(--plenary-ink); border-color: var(--plenary); }
+  .opt input:checked ~ .box::before { border-color: currentColor; background: radial-gradient(circle, currentColor 0 4px, transparent 5px); }
+  .opt input:focus-visible ~ .box { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .err { display: none; font-size: 13px; color: var(--bad); }
+  .invalid .err { display: block; }
+  .invalid input[type="text"], .invalid input[type="email"], .invalid textarea, .invalid .opt .box { border-color: var(--bad); }
+
+  .submit-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .submit-row .btn { padding: 13px 24px; font-size: 15px; }
+  .privacy { font-size: 13px; color: var(--muted); max-width: 52ch; }
+  .notice { border-radius: 12px; padding: 14px 16px; font-size: 14.5px; display: none; }
+  .notice.show { display: block; }
+  .notice.bad { background: var(--bad-bg); color: var(--bad); border: 1px solid color-mix(in srgb, var(--bad) 30%, transparent); }
+  .notice.wait { background: var(--keynote); color: var(--keynote-ink); }
+
+  /* ---- aside: what to expect ---- */
+  .aside { display: grid; gap: 12px; }
+  @media (min-width: 861px) { .aside { position: sticky; top: 84px; } }
+  .aside .card { padding: 16px 18px; gap: 10px; }
+  .aside h3 { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0; }
+  .aside p, .aside li { font-size: 13.5px; }
+  .aside ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .aside .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---- confirmation ---- */
+  .done { display: none; }
+  .done.show { display: grid; gap: 18px; }
+  .done .card { border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+  .check { width: 52px; height: 52px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); display: grid; place-items: center; font-size: 26px; font-weight: 700; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .summary div { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .summary .k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .summary .v { font-weight: 600; margin-top: 2px; overflow-wrap: anywhere; }
+
+  footer { margin-top: 36px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  @media (prefers-reduced-motion: reduce) { .opt .box { transition: none; } }
+  .vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="yls"><div class="bar-in"><a href="https://law.yale.edu" target="_blank" rel="noopener"><img src="assets/yls-logo.png" alt="Yale Law School"></a></div></div>
+<div class="bar"><div class="bar-in">
+  <a class="mark" href="index.html#home" aria-label="Conference home"><img src="assets/isp-logo.png" alt="Information Society Project"></a>
+  <nav><a href="index.html#home">Home</a><a href="index.html#schedule">Schedule</a><a class="on" href="rsvp.html" aria-current="page">RSVP</a></nav>
+</div></div>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Information Society Project · Yale Law School · Spring Conference 2027</div>
+    <h1>Will you join us?</h1>
+    <p class="lede">You are invited to <b>Democratic Decline and Renewal in the Digital Age</b>, two days at Yale Law School on how democracies erode and what it would take to repair them. Please tell us about the dinners and the hotel nights so we can plan. It takes about two minutes.</p>
+  </section>
+  <div class="ribbon" aria-label="Dates and venue"><div><b>April 2–3, 2027</b><br><span>Yale Law School · New Haven, Connecticut</span></div><a class="btn" href="index.html#schedule">Review the programme</a></div>
+
+  <div class="layout">
+    <form id="rsvp" novalidate autocomplete="on">
+      <div id="notice" class="notice" role="alert"></div>
+
+      <section class="card">
+        <div class="card-head"><span class="num">1</span><div><h2>About you</h2><p>So we know who is replying and how to reach you.</p></div></div>
+        <div class="two">
+          <div class="field" id="f-name">
+            <label for="name">Full name <span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="200" required aria-required="true" aria-describedby="e-name">
+            <span class="err" id="e-name">Please enter your name.</span>
+          </div>
+          <div class="field" id="f-email">
+            <label for="email">Preferred email <span class="req" aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-required="true" aria-describedby="e-email" inputmode="email" spellcheck="false">
+            <span class="err" id="e-email">Please enter a valid email address.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><span class="num">2</span><div><h2>Dinners</h2><p>Two evenings, both optional. Say yes to either, both, or neither.</p></div></div>
+        <div class="two">
+          <fieldset class="field" id="f-thursday_dinner" aria-describedby="e-thursday_dinner">
+            <legend>Informal Thursday night dinner <span class="req" aria-hidden="true">*</span></legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="thursday_dinner" value="attending" required><span class="box">Attending</span></label>
+              <label class="opt"><input type="radio" name="thursday_dinner" value="not_attending"><span class="box">Not attending</span></label>
+            </div>
+            <span class="err" id="e-thursday_dinner">Please choose one.</span>
+          </fieldset>
+          <fieldset class="field" id="f-friday_dinner" aria-describedby="e-friday_dinner">
+            <legend>Friday night dinner <span class="req" aria-hidden="true">*</span></legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="friday_dinner" value="attending" required><span class="box">Attending</span></label>
+              <label class="opt"><input type="radio" name="friday_dinner" value="not_attending"><span class="box">Not attending</span></label>
+            </div>
+            <span class="err" id="e-friday_dinner">Please choose one.</span>
+          </fieldset>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><span class="num">3</span><div><h2>Hotel</h2><p>Let us know which nights you need a room.</p></div></div>
+        <div class="two">
+          <fieldset class="field" id="f-hotel_thursday" aria-describedby="e-hotel_thursday">
+            <legend>Thursday night <span class="req" aria-hidden="true">*</span></legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="hotel_thursday" value="need_room" required><span class="box">I need a hotel room</span></label>
+              <label class="opt"><input type="radio" name="hotel_thursday" value="no_room"><span class="box">I do not need a room</span></label>
+            </div>
+            <span class="err" id="e-hotel_thursday">Please choose one.</span>
+          </fieldset>
+          <fieldset class="field" id="f-hotel_friday" aria-describedby="e-hotel_friday">
+            <legend>Friday night <span class="req" aria-hidden="true">*</span></legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="hotel_friday" value="need_room" required><span class="box">I need a hotel room</span></label>
+              <label class="opt"><input type="radio" name="hotel_friday" value="no_room"><span class="box">I do not need a room</span></label>
+            </div>
+            <span class="err" id="e-hotel_friday">Please choose one.</span>
+          </fieldset>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><span class="num">4</span><div><h2>Dietary restrictions and allergies</h2><p>Optional. We pass this on to the caterers.</p></div></div>
+        <div class="field" id="f-dietary">
+          <label for="dietary">Anything we should know?</label>
+          <textarea id="dietary" name="dietary" maxlength="2000" placeholder="For example: vegetarian, vegan, gluten-free, halal, kosher, a nut allergy." aria-describedby="h-dietary e-dietary"></textarea>
+          <span class="hint" id="h-dietary">Please list any dietary restrictions, food allergies or preferences.</span>
+          <span class="err" id="e-dietary">Please keep this under 2,000 characters.</span>
+        </div>
+      </section>
+
+      <!-- Left empty by people; filled in by some automated submitters, which the relay then ignores. -->
+      <div class="vh" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+
+      <div class="submit-row">
+        <p class="privacy">Your reply goes only to the organising team. It is filed privately and is never shown to other guests.</p>
+        <button class="btn" type="submit" id="send">Send my reply</button>
+      </div>
+    </form>
+
+    <aside class="aside">
+      <div class="card">
+        <div class="k">Where you are going</div>
+        <h3>Democratic Decline and Renewal in the Digital Age</h3>
+        <p class="muted">Yale Law School, 127 Wall Street, New Haven. Nine panels, a keynote conversation and a closing plenary over lunch. In person and off the record.</p>
+        <a class="btn ghost" href="index.html#schedule">See the two-day schedule</a>
+      </div>
+      <div class="card">
+        <div class="k">Before you reply</div>
+        <ul>
+          <li>Thursday's dinner is informal; Friday's is the conference dinner.</li>
+          <li>Tell us about both hotel nights even if you only need one.</li>
+          <li>Plans change? Send the form again. Your latest reply replaces the earlier one.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <section class="done" id="done" aria-live="polite">
+    <div class="card">
+      <div class="check" aria-hidden="true">✓</div>
+      <h2>Thank you. Your reply is in.</h2>
+      <p class="muted" id="done-lede">We have recorded your answers for the organising team. If anything changes before April, come back to this page and send the form again.</p>
+      <div class="summary" id="summary"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px"><a class="btn" href="index.html#schedule">Review the programme</a><button class="btn ghost" type="button" id="again">Change my answers</button></div>
+    </div>
+  </section>
+
+  <footer><span>Information Society Project · Yale Law School · 127 Wall Street, New Haven, CT 06511</span><span>Questions? Reply to your invitation email.</span></footer>
+</div>
+
+<script>
+  // Where replies are sent. The relay files each reply in the organisers' private repository; it never returns anyone's answers.
+  const RSVP_ENDPOINT = "";
+
+  const LABELS = {
+    name: "Name", email: "Email",
+    thursday_dinner: "Thursday dinner", friday_dinner: "Friday dinner",
+    hotel_thursday: "Hotel, Thursday", hotel_friday: "Hotel, Friday",
+    dietary: "Dietary notes",
+  };
+  const WORDS = { attending: "Attending", not_attending: "Not attending", need_room: "Room needed", no_room: "No room needed" };
+  const CHOICES = ["thursday_dinner", "friday_dinner", "hotel_thursday", "hotel_friday"];
+
+  const form = document.getElementById("rsvp");
+  const notice = document.getElementById("notice");
+  const send = document.getElementById("send");
+  const done = document.getElementById("done");
+  let busy = false;
+
+  const field = k => document.getElementById("f-" + k);
+  const mark = (k, bad) => field(k).classList.toggle("invalid", bad);
+  const clean = s => String(s || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim();
+
+  function read() {
+    const fd = new FormData(form);
+    const data = {
+      name: clean(fd.get("name")).replace(/\s+/g, " "),
+      email: clean(fd.get("email")),
+      dietary: clean(fd.get("dietary")),
+      website: String(fd.get("website") || ""),
+    };
+    for (const k of CHOICES) data[k] = fd.get(k) ? String(fd.get(k)) : "";
+    return data;
+  }
+
+  function validate(d) {
+    const bad = [];
+    if (d.name.length < 1 || d.name.length > 200) bad.push("name");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email) || d.email.length > 254) bad.push("email");
+    for (const k of CHOICES) if (!["attending", "not_attending", "need_room", "no_room"].includes(d[k])) bad.push(k);
+    if (d.dietary.length > 2000) bad.push("dietary");
+    for (const k of ["name", "email", ...CHOICES, "dietary"]) mark(k, bad.includes(k));
+    return bad;
+  }
+
+  function show(kind, text) {
+    notice.className = "notice show " + kind;
+    notice.textContent = text;
+  }
+  function hide() { notice.className = "notice"; notice.textContent = ""; }
+
+  function configured() { return /^https:\/\/\S+$/.test(RSVP_ENDPOINT) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(RSVP_ENDPOINT); }
+  if (!configured()) {
+    show("wait", "Replies are not open yet. Please check back shortly, or reply to your invitation email.");
+    send.disabled = true;
+  }
+
+  async function post(d) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 25000);
+    try {
+      const res = await fetch(RSVP_ENDPOINT, {
+        method: "POST", mode: "cors", credentials: "omit", cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(d), signal: ctrl.signal,
+      });
+      let body = null;
+      try { body = await res.json(); } catch (e) { body = null; }
+      return { status: res.status, body };
+    } finally { clearTimeout(timer); }
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (busy || !configured()) return;
+    hide();
+    const d = read();
+    const bad = validate(d);
+    if (bad.length) {
+      show("bad", "A few answers are missing or need a second look. They are marked below.");
+      const first = field(bad[0]).querySelector("input, textarea");
+      if (first) first.focus();
+      return;
+    }
+    busy = true; send.disabled = true; send.textContent = "Sending…";
+    let out;
+    try { out = await post(d); } catch (err) { out = { status: 0, body: null }; }
+    busy = false; send.disabled = false; send.textContent = "Send my reply";
+    if (out.status === 200 && out.body && out.body.ok) { finish(d); return; }
+    if (out.status === 400 && out.body && Array.isArray(out.body.fields)) {
+      for (const k of out.body.fields) if (field(k)) mark(k, true);
+      show("bad", "A few answers need a second look. They are marked below.");
+      return;
+    }
+    if (out.status === 429) { show("bad", "Too many replies from this connection in a short time. Please wait a minute and try again."); return; }
+    show("bad", "We could not record your reply just now. Nothing was lost: your answers are still here, so please try sending again in a moment. If it keeps failing, reply to your invitation email instead.");
+  });
+
+  function finish(d) {
+    const sum = document.getElementById("summary");
+    sum.innerHTML = "";
+    const rows = [["name", d.name], ["email", d.email], ...CHOICES.map(k => [k, WORDS[d[k]]]), ["dietary", d.dietary || "None given"]];
+    for (const [k, v] of rows) {
+      const el = document.createElement("div");
+      const kk = document.createElement("div"); kk.className = "k"; kk.textContent = LABELS[k];
+      const vv = document.createElement("div"); vv.className = "v"; vv.textContent = v;
+      el.append(kk, vv); sum.appendChild(el);
+    }
+    form.hidden = true; document.querySelector(".aside").hidden = true;
+    done.classList.add("show");
+    window.scrollTo({ top: 0 });
+    document.querySelector("#done h2").setAttribute("tabindex", "-1");
+    document.querySelector("#done h2").focus();
+  }
+
+  document.getElementById("again").addEventListener("click", () => {
+    done.classList.remove("show");
+    form.hidden = false; document.querySelector(".aside").hidden = false;
+    window.scrollTo({ top: 0 });
+    document.getElementById("name").focus();
+  });
+
+  // Clear a field's error as soon as the person fixes it.
+  form.addEventListener("input", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
+  form.addEventListener("change", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
+</script>
+</body>
+</html>
