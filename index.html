@@ -4,60 +4,137 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Democratic Decline and Renewal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
-  /* A plain conference page: one serif, left-aligned headings, lists rather than cards. Hash routing, one file.
-     The invitation and RSVP page (rsvp.html) is deliberately not linked from here. */
+  /* Layout: a small conference site in the register of law.yale.edu/isp (Playfair Display headings, Raleway text, Yale blue, light-grey bands).
+     Home, Schedule (a time grid, every block a link), one page per session, Speakers. Hash routing, one file. rsvp.html is deliberately not linked from here. */
   :root {
-    --bg: #ffffff; --ink: #1f1f1f; --muted: #5c5c5c; --line: #d6d6d6; --yale: #00356b; --link: #00356b;
-    --serif: Georgia, "Times New Roman", Times, serif;
-    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --bg: #ffffff; --paper: #ffffff; --band: #f7f7f7; --band2: #ececec; --ink: #333333; --text: #4a4a4a; --muted: #6b6b6b; --line: #dddddd;
+    --yale: #00356b; --link: #00356b;
+    --plenary: #00356b; --plenary-ink: #ffffff; --breakout: #ffffff; --breakout-ink: #333333; --keynote: #dfe8f2; --keynote-ink: #1f2f44;
+    --social: #ececec; --social-ink: #4a4a4a; --pause-ink: #6b6b6b;
+    --display: "Playfair Display", Georgia, "Times New Roman", serif;
+    --body: "Raleway", Avenir, "Helvetica Neue", Arial, sans-serif;
+    --row: 28px;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #171a1e; --ink: #e8e8e8; --muted: #a9a9a9; --line: #3b4046; --link: #9cc0ea; color-scheme: dark; }
+    :root:not([data-theme="light"]) { --bg: #141a21; --paper: #1b232c; --band: #1b232c; --band2: #242d37; --ink: #e8edf2; --text: #d5dbe2; --muted: #9aa8b6; --line: #2f3a46;
+      --link: #9dbbe0; --plenary: #2f5a8a; --breakout: #1b232c; --breakout-ink: #e8edf2; --keynote: #2a3b4d; --keynote-ink: #dfe8f2; --social: #2a2f36; --social-ink: #d5dbe2; --pause-ink: #9aa8b6; color-scheme: dark; }
   }
-  :root[data-theme="dark"] { --bg: #171a1e; --ink: #e8e8e8; --muted: #a9a9a9; --line: #3b4046; --link: #9cc0ea; color-scheme: dark; }
+  :root[data-theme="dark"] { --bg: #141a21; --paper: #1b232c; --band: #1b232c; --band2: #242d37; --ink: #e8edf2; --text: #d5dbe2; --muted: #9aa8b6; --line: #2f3a46;
+    --link: #9dbbe0; --plenary: #2f5a8a; --breakout: #1b232c; --breakout-ink: #e8edf2; --keynote: #2a3b4d; --keynote-ink: #dfe8f2; --social: #2a2f36; --social-ink: #d5dbe2; --pause-ink: #9aa8b6; color-scheme: dark; }
 
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--serif); font-size: 17px; line-height: 1.55; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   a { color: var(--link); }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 30px 16px 56px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 16px 56px; }
 
   /* top: YLS strip, then the ISP band in Yale blue */
   .yls { background: #ffffff; border-bottom: 1px solid #dfe5ec; }
   .yls .bar-in { padding: 9px 16px; }
   .yls img { height: 26px; width: auto; display: block; }
-  .bar { background: var(--yale); color: #fff; }
-  .bar-in { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .bar { position: sticky; top: 0; z-index: 5; background: var(--yale); color: #fff; }
+  .bar-in { max-width: 1080px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .mark { display: flex; align-items: center; text-decoration: none; }
   .mark img { height: 40px; width: auto; display: block; }
   nav { display: flex; gap: 2px; }
-  nav a { text-decoration: none; font-family: var(--sans); font-size: 13px; font-weight: 600; padding: 8px 12px; color: rgba(255,255,255,0.85); border-bottom: 2px solid transparent; }
+  nav a { text-decoration: none; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 12px; color: rgba(255,255,255,0.85); border-bottom: 2px solid transparent; }
   nav a.on, nav a:hover { color: #fff; border-bottom-color: #fff; }
-  nav a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  nav a:focus-visible, .ev:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
-  h1 { font-weight: normal; font-size: 34px; line-height: 1.15; margin: 0 0 8px; }
-  h2 { font-weight: normal; font-size: 24px; line-height: 1.2; margin: 38px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
-  h3 { font-size: 18px; font-weight: bold; margin: 20px 0 4px; }
-  p { margin: 0 0 14px; }
-  ul { margin: 0 0 14px; padding-left: 22px; }
-  .meta { color: var(--muted); margin-bottom: 22px; }
+  .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--yale); }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.5vw, 44px); line-height: 1.12; margin: 0; color: var(--ink); text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.2; margin: 0 0 10px; color: var(--ink); text-wrap: balance; }
+  .section > h2::before { content: ""; display: block; width: 44px; height: 3px; background: var(--yale); margin-bottom: 12px; }
+  h3 { font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.25; margin: 0 0 4px; color: var(--ink); }
+  p { margin: 0; }
   .muted { color: var(--muted); }
-  .crumbs { font-family: var(--sans); font-size: 14px; margin-bottom: 18px; }
-  .people { list-style: none; padding: 0; }
-  .people li { margin-bottom: 10px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: 700; font-size: 13.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 20px; background: var(--yale); color: #fff; border: 2px solid var(--yale); }
+  .btn:hover { background: #002a55; border-color: #002a55; }
+  .btn.ghost { background: transparent; color: var(--link); border-color: var(--yale); }
+  .btn.ghost:hover { background: var(--band2); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.ghost { border-color: var(--link); } }
+  :root[data-theme="dark"] .btn.ghost { border-color: var(--link); }
 
-  /* schedule: a timetable, one row per slot */
-  .sched { list-style: none; padding: 0; margin: 0 0 8px; border-top: 1px solid var(--line); }
-  .sched li { display: grid; grid-template-columns: 130px 1fr; gap: 8px 14px; padding: 9px 0; border-bottom: 1px solid var(--line); }
-  .sched .t { font-family: var(--sans); font-size: 14px; color: var(--muted); padding-top: 3px; white-space: nowrap; }
-  .sched .kind { font-family: var(--sans); font-size: 13px; color: var(--muted); }
-  .sched .pause { color: var(--muted); font-style: italic; }
-  .sched .par { margin: 6px 0 0; padding-left: 18px; }
-  .sched .par li { display: list-item; grid-template-columns: none; padding: 2px 0; border: 0; }
-  @media (max-width: 480px) { .sched li { grid-template-columns: 1fr; gap: 2px; } }
+  /* home */
+  .hero { background: var(--band); border: 1px solid var(--line); border-top: 4px solid var(--yale); padding: clamp(26px, 4vw, 44px) clamp(20px, 5vw, 48px); margin-bottom: 36px; display: grid; gap: 14px; }
+  .hero h1 { max-width: 20ch; }
+  .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; background: var(--band2); padding: 12px 16px; }
+  .ribbon b { font-family: var(--display); font-weight: 700; font-size: 20px; color: var(--ink); }
+  .ribbon span { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+  .hero .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .section { margin-bottom: 40px; display: grid; gap: 12px; }
+  .section p { max-width: 70ch; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 32px; }
+  .people { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px 28px; }
+  .person { border-left: 3px solid var(--yale); padding: 2px 0 2px 14px; min-width: 0; }
+  .person .nm { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.25; color: var(--ink); }
+  .person .af { font-size: 13.5px; color: var(--muted); line-height: 1.4; }
 
-  .nextprev { display: flex; justify-content: space-between; gap: 16px; margin-top: 36px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--sans); font-size: 14px; }
-  footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--sans); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  /* schedule grid */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; margin: 14px 0 20px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .sw { width: 14px; height: 14px; display: inline-block; border: 1px solid var(--line); }
+  .days { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 760px) { .days { grid-template-columns: 1fr; } }
+  .day { background: var(--paper); border: 1px solid var(--line); border-top: 4px solid var(--yale); padding: 0 0 20px; min-width: 0; overflow: hidden; }
+  .day-head { background: var(--band); padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+  .day h2 { font-size: 24px; margin: 0 0 2px; }
+  .day .when { font-size: 13px; color: var(--muted); margin: 0; }
+  .grid-wrap { padding: 14px 16px 0; }
+  .grid { display: grid; grid-template-columns: 58px 1fr; grid-auto-rows: var(--row); column-gap: 10px; position: relative; padding: 0 8px 0 0; }
+  .grid::before { content: ""; position: absolute; inset: 0; background: var(--band); z-index: 0; }
+  .grid > * { position: relative; z-index: 1; }
+  .tick { grid-column: 1; font-size: 11px; color: var(--muted); text-align: right; padding-right: 2px; transform: translateY(-8px); font-variant-numeric: tabular-nums; }
+  .rule { grid-column: 2; border-top: 1px solid var(--line); height: 0; align-self: start; pointer-events: none; }
+  .ev { grid-column: 2; padding: 7px 11px; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-decoration: none; border: 1px solid transparent; }
+  a.ev:hover { outline: 2px solid var(--yale); outline-offset: -2px; }
+  .ev .t { font-size: 11px; letter-spacing: 0.02em; opacity: 0.85; font-variant-numeric: tabular-nums; }
+  .ev .n { font-family: var(--display); font-weight: 700; font-size: 15px; line-height: 1.2; text-wrap: balance; }
+  .ev .p { font-size: 12px; line-height: 1.3; opacity: 0.92; }
+  .ev .k { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+  .plenary { background: var(--plenary); color: var(--plenary-ink); }
+  .breakout { background: var(--breakout); color: var(--breakout-ink); border-color: var(--yale); }
+  .keynote { background: var(--keynote); color: var(--keynote-ink); }
+  .social { background: var(--social); color: var(--social-ink); }
+  .pause { background: transparent; color: var(--pause-ink); padding-block: 2px; justify-content: center; overflow: hidden; }
+  .pause .n { font-family: var(--body); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .pause .p { font-size: 11px; }
+  .pair { grid-column: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; min-width: 0; }
+  .pair .ev { grid-column: auto; }
+  .pair .ev .n { font-size: 14px; }
+  .pair .ev .p { font-size: 11.5px; }
+  .pair .ev .t, .keynote .t, .social .t { display: none; }
+  .keynote, .social { padding-block: 6px; }
+  .social .k { display: none; }
+
+  /* session page */
+  .crumbs { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .crumbs a { color: var(--muted); }
+  .evhead { padding: 22px 22px 20px; margin-bottom: 24px; display: grid; gap: 8px; border: 1px solid var(--line); }
+  .evhead.plenary, .evhead.keynote, .evhead.social { border-color: transparent; }
+  .evhead h1 { font-size: clamp(26px, 4vw, 38px); max-width: 24ch; color: inherit; }
+  .evhead .k { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+  .evhead .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+  .evhead .meta a { color: inherit; }
+  .evbody { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: start; }
+  @media (max-width: 760px) { .evbody { grid-template-columns: 1fr; } }
+  .desc { display: grid; gap: 12px; }
+  .desc p { max-width: 64ch; }
+  .tba { background: var(--band); border: 1px solid var(--line); padding: 14px 16px; display: grid; gap: 6px; font-size: 14.5px; }
+  .speakers { display: grid; gap: 12px; }
+  .speakers.two-col { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+  .spk { background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--yale); padding: 14px 16px; min-width: 0; }
+  .spk .nm { font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.2; color: var(--ink); }
+  .spk .af { font-size: 13.5px; color: var(--muted); }
+  .spk .bio { font-size: 14px; margin-top: 6px; }
+  .tbc { display: block; margin-top: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .tbc.ok { color: var(--link); }
+  .nextprev { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .nextprev a { font-size: 14px; text-decoration: none; padding: 10px 14px; border: 1px solid var(--line); background: var(--paper); max-width: 48%; font-family: var(--display); font-weight: 700; color: var(--ink); }
+  .nextprev a span { display: block; font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -147,52 +224,91 @@
       ["Henry Bradley", "Fellow, Information Society Project and Program for the Study of Reproductive Justice"],
     ];
     return `
-    <h1>Democratic Decline and Renewal in the Digital Age</h1>
-    <p class="meta">The Information Society Project's 2027 spring conference<br>April 2–3, 2027 · Yale Law School, 127 Wall Street, New Haven, Connecticut</p>
+    <section class="hero">
+      <div class="eyebrow">Information Society Project · Yale Law School · Spring Conference 2027</div>
+      <h1>Democratic Decline and Renewal in the Digital Age</h1>
+      <div class="ribbon" aria-label="Dates and venue"><b>April 2–3, 2027</b><span>Yale Law School · New Haven, Connecticut</span></div>
+      <div class="actions"><a class="btn" href="#schedule">See the schedule</a><a class="btn ghost" href="#speakers">Speakers</a></div>
+    </section>
 
-    <h2>About the conference</h2>
-    <p><em>Democratic Decline and Renewal</em> is the Information Society Project's spring conference for 2027, held at Yale Law School in New Haven on Friday, April 2 and Saturday, April 3. Its subject is institutional reform: how the institutions of American constitutional democracy might be repaired, and how its fundamental values might be revived.</p>
-    <p>The participants are legal scholars, leaders of the legal profession, and people who have worked in government and in civil society organizations. Over the two days they will take up the question of how to respond to democratic backsliding and to threats to the constitutional order. Each panel is devoted to a single theme, and each is asked to offer concrete proposals as well as diagnoses.</p>
-    <p>Before the conference, every contributor writes a short essay of 1,000 to 1,500 words, due by March 24, 2027. The essays are circulated in advance so that participants can see the questions and concerns they share. With the authors' permission, they will later be published together as an online symposium on <a href="https://balkin.blogspot.com" rel="noopener">Balkinization</a>.</p>
+    <section class="section">
+      <h2>About the conference</h2>
+      <p><em>Democratic Decline and Renewal</em> is the Information Society Project's spring conference for 2027, held at Yale Law School in New Haven on Friday, April 2 and Saturday, April 3. Its subject is institutional reform: how the institutions of American constitutional democracy might be repaired, and how its fundamental values might be revived.</p>
+      <p>The participants are legal scholars, leaders of the legal profession, and people who have worked in government and in civil society organizations. Over the two days they will take up the question of how to respond to democratic backsliding and to threats to the constitutional order. Each panel is devoted to a single theme, and each is asked to offer concrete proposals as well as diagnoses.</p>
+      <p>Before the conference, every contributor writes a short essay of 1,000 to 1,500 words, due by March 24, 2027. The essays are circulated in advance so that participants can see the questions and concerns they share. With the authors' permission, they will later be published together as an online symposium on <a href="https://balkin.blogspot.com" rel="noopener">Balkinization</a>.</p>
+    </section>
 
-    <h2>How the two days run</h2>
-    <h3>Friday, April 2</h3>
-    <p>The first day opens with a plenary on executive power, followed by two breakout sessions held in parallel, a plenary on campaign finance and the party system, and a plenary on representation and voting rights. A keynote conversation at 5:00 pm closes the day, followed by cocktails and dinner.</p>
-    <h3>Saturday, April 3</h3>
-    <p>The second day begins with a plenary on Congress and the amendment process, followed by two parallel breakout sessions and a plenary on court reform. A closing plenary on universities and civil society is held over lunch. The conference ends at 2:00 pm.</p>
-    <h3>Reading</h3>
-    <p>The essays for each panel will be circulated in advance, and participants are asked to read them before the conference.</p>
-    <h3>Attendance</h3>
-    <p>The conference is open to the Yale Law School community and a limited number of invited guests. It is an invitation-only, closed-door event.</p>
+    <section class="section">
+      <h2>How the two days run</h2>
+      <div class="cols">
+        <div><h3>Friday, April 2</h3><p>The first day opens with a plenary on executive power, followed by two breakout sessions held in parallel, a plenary on campaign finance and the party system, and a plenary on representation and voting rights. A keynote conversation at 5:00 pm closes the day, followed by cocktails and dinner.</p></div>
+        <div><h3>Saturday, April 3</h3><p>The second day begins with a plenary on Congress and the amendment process, followed by two parallel breakout sessions and a plenary on court reform. A closing plenary on universities and civil society is held over lunch. The conference ends at 2:00 pm.</p></div>
+        <div><h3>Reading</h3><p>The essays for each panel will be circulated in advance, and participants are asked to read them before the conference.</p></div>
+        <div><h3>Attendance</h3><p>The conference is open to the Yale Law School community and a limited number of invited guests. It is an invitation-only, closed-door event.</p></div>
+      </div>
+    </section>
 
-    <h2>Convened by</h2>
-    <ul class="people">${organizers.map(([n, t]) => `<li><b>${esc(n)}</b>, ${esc(t)}</li>`).join("")}</ul>
-    <p>The Information Society Project is an intellectual center at Yale Law School studying the implications of the Internet and new information technologies for law and society. See <a href="#schedule">the schedule</a> and <a href="#speakers">the speakers</a>.</p>`;
+    <section class="section">
+      <h2>Convened by</h2>
+      <div class="people">
+        ${organizers.map(([n, t]) => `<div class="person"><div class="nm">${esc(n)}</div><div class="af">${esc(t)}</div></div>`).join("")}
+      </div>
+      <p class="muted">The Information Society Project is an intellectual center at Yale Law School studying the implications of the Internet and new information technologies for law and society.</p>
+    </section>`;
   }
 
   function schedule() {
-    let html = `<h1>Schedule</h1><p class="meta">Breakout sessions run in parallel. Click a session for its description.</p>`;
+    return `<div class="eyebrow">Program</div><h1 style="margin-bottom:8px">Schedule</h1>
+      <p class="muted">Breakout sessions run in parallel. Click a session for its description.</p>
+      <div class="legend">
+        <span><i class="sw plenary"></i>Plenary</span><span><i class="sw breakout"></i>Breakout, in parallel</span>
+        <span><i class="sw keynote"></i>Keynote conversation</span><span><i class="sw social"></i>Cocktails and dinner</span></div>
+      <div class="days" id="days"></div>`;
+  }
+  function buildGrid() {
+    const root = document.getElementById("days"); if (!root) return;
+    const row = (day, m, up) => (up ? Math.ceil : Math.floor)((m - day.start) / 15) + 1;
     for (const day of DAYS) {
-      html += `<h2>${day.when}</h2><ul class="sched">`;
+      const sec = document.createElement("section"); sec.className = "day";
+      sec.innerHTML = `<div class="day-head"><h2>${day.name}</h2><p class="when">${day.when}</p></div>`;
+      const wrap = document.createElement("div"); wrap.className = "grid-wrap";
+      const grid = document.createElement("div"); grid.className = "grid";
+      grid.style.gridTemplateRows = `repeat(${row(day, day.end, true) - 1}, var(--row))`;
+      for (let m = day.start; m <= day.end; m += 60) {
+        const r = row(day, m);
+        const tick = document.createElement("div"); tick.className = "tick"; tick.style.gridRow = `${r}`; tick.textContent = ampm(m).replace(" ", ""); grid.appendChild(tick);
+        const rule = document.createElement("div"); rule.className = "rule"; rule.style.gridRow = `${r}`; grid.appendChild(rule);
+      }
+      const card = ev => {
+        const isLink = ev.kind !== "pause";
+        const d = document.createElement(isLink ? "a" : "div");
+        d.className = `ev ${ev.kind}`; if (isLink) d.href = `#${ev.id}`;
+        const time = `<span class="t">${fmt(ev.s)}–${fmt(ev.e)}</span>`;
+        const k = ev.k ? `<span class="k">${esc(ev.k)}</span>` : "";
+        const p = ev.kind === "pause" ? (ev.p ? `<span class="p">${esc(ev.p)}</span>` : "") : `<span class="p">${esc(ev.p || ev.sub || "")}</span>`;
+        d.innerHTML = ev.kind === "pause"
+          ? `<span class="n">${esc(ev.n)}${ev.n === "Lunch" ? ` · ${fmt(ev.s)}–${fmt(ev.e)}` : ""}</span>${p}`
+          : `${time}${k}<span class="n">${esc(ev.n)}</span>${p}`;
+        return d;
+      };
       const evs = EVENTS.filter(e => e.day === day.id); const done = new Set();
       for (const ev of evs) {
         if (done.has(ev.id)) continue;
-        const time = `<span class="t">${ampm(ev.s)}–${ampm(ev.e)}</span>`;
+        let el;
         if (ev.pair) {
-          const group = evs.filter(x => x.pair === ev.pair); group.forEach(x => done.add(x.id));
-          html += `<li>${time}<span>Breakout sessions, in parallel:<ul class="par">${group.map(x => `<li><a href="#${x.id}">${esc(x.n)}</a></li>`).join("")}</ul></span></li>`;
-        } else if (ev.kind === "pause") {
-          done.add(ev.id);
-          html += `<li>${time}<span class="pause">${esc(ev.n)}</span></li>`;
-        } else {
-          done.add(ev.id);
-          const kind = ev.k ? ` <span class="kind">${esc(ev.k)}</span>` : "";
-          html += `<li>${time}<span><a href="#${ev.id}">${esc(ev.n)}</a>${ev.sub ? `: ${esc(ev.sub)}` : ""}${kind}</span></li>`;
-        }
+          el = document.createElement("div"); el.className = "pair";
+          for (const it of evs.filter(x => x.pair === ev.pair)) { el.appendChild(card(it)); done.add(it.id); }
+        } else { el = card(ev); done.add(ev.id); }
+        const r1 = row(day, ev.s), r2 = row(day, ev.e, true);
+        el.style.gridRow = `${r1} / ${r2}`;
+        const rowPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--row")) || 28;
+        const topOff = ((ev.s - day.start) / 15 - (r1 - 1)) * rowPx;
+        const botOff = ((r2 - 1) - (ev.e - day.start) / 15) * rowPx;
+        el.style.marginTop = `${topOff + 2}px`; el.style.marginBottom = `${botOff + 2}px`;
+        grid.appendChild(el);
       }
-      html += `</ul>`;
+      wrap.appendChild(grid); sec.appendChild(wrap); root.appendChild(sec);
     }
-    return html;
   }
 
   function eventPage(ev) {
@@ -200,26 +316,30 @@
     const i = SESSIONS.indexOf(ev); const prev = SESSIONS[i - 1], next = SESSIONS[i + 1];
     const parallel = ev.pair ? SESSIONS.filter(x => x.pair === ev.pair && x !== ev) : [];
     const isPanel = ev.kind === "plenary" || ev.kind === "breakout" || ev.kind === "keynote";
-    const meta = [esc(ev.k || ""), `${day.when}, ${ampm(ev.s)} to ${ampm(ev.e)}`];
-    if (parallel.length) meta.push(`held in parallel with ${parallel.map(x => `<a href="#${x.id}">${esc(x.n)}</a>`).join(" and ")}`);
     return `
-    <p class="crumbs"><a href="#schedule">Schedule</a></p>
-    <h1>${esc(ev.n)}${ev.sub ? `: ${esc(ev.sub)}` : ""}</h1>
-    <p class="meta">${meta.filter(Boolean).join(" · ")}</p>
-    ${(ev.d || []).map(p => `<p>${esc(p)}</p>`).join("")}
-    ${isPanel ? `<h2>Participants</h2><p>${ev.kind === "keynote" ? "The conversation partners" : "The panelists"} will be announced once confirmed.</p>` : ""}
+    <div class="crumbs"><a href="#home">Home</a> › <a href="#schedule">Schedule</a> › ${esc(ev.n)}</div>
+    <div class="evhead ${ev.kind}">
+      <div class="k">${esc(ev.k || "")} · ${day.name}</div>
+      <h1>${esc(ev.n)}</h1>
+      ${ev.sub ? `<p style="font-size:17px;opacity:.9">${esc(ev.sub)}</p>` : ""}
+      <div class="meta"><span><b>${day.when}</b></span><span>${ampm(ev.s)} to ${ampm(ev.e)}</span>${parallel.length ? `<span>Held in parallel with ${parallel.map(x => `<a href="#${x.id}">${esc(x.n)}</a>`).join(" and ")}</span>` : ""}${ev.kind === "plenary" || ev.kind === "keynote" ? "<span>All participants</span>" : ""}</div>
+    </div>
+    <div class="evbody">
+      <div class="desc">${(ev.d || []).map(p => `<p>${esc(p)}</p>`).join("")}</div>
+      <div>${isPanel ? `<h2>Participants</h2><div class="tba"><p>${ev.kind === "keynote" ? "The conversation partners" : "The panelists"} will be announced here once confirmed.</p></div>` : ""}</div>
+    </div>
     <div class="nextprev">
-      <span>${prev ? `Previous: <a href="#${prev.id}">${esc(prev.n)}</a>` : ""}</span>
-      <span>${next ? `Next: <a href="#${next.id}">${esc(next.n)}</a>` : ""}</span>
+      ${prev ? `<a href="#${prev.id}"><span>Previous</span>${esc(prev.n)}</a>` : "<span></span>"}
+      ${next ? `<a href="#${next.id}" style="text-align:right"><span>Next</span>${esc(next.n)}</a>` : ""}
     </div>`;
   }
 
   function speakersPage() {
-    const items = SPEAKERS_TBC.map(p => `<li><b>${esc(p.n)}</b>, ${esc(p.a)}. ${esc(p.b)}${p.confirmed ? "" : " <span class=\"muted\">(to be confirmed)</span>"}</li>`).join("");
-    return `<h1>Speakers</h1>
-      <p class="meta">Participants will be listed here, with their sessions, as they are confirmed.</p>
-      <ul class="people">${items}</ul>
-      <p class="muted">Further participants from the legal academy, government and civil society will be added as they are confirmed. The program and participants are subject to change.</p>`;
+    const cards = SPEAKERS_TBC.map(p => `<div class="spk"><div class="nm">${esc(p.n)}</div><div class="af">${esc(p.a)}</div><div class="bio">${esc(p.b)}</div><div class="tbc${p.confirmed ? " ok" : ""}">${p.confirmed ? "Confirmed" : "To be confirmed"}</div></div>`).join("");
+    return `<div class="eyebrow">Participants</div><h1 style="margin-bottom:8px">Speakers</h1>
+      <p class="muted" style="margin-bottom:18px">Participants will be listed here, with their sessions, as they are confirmed.</p>
+      <div class="speakers two-col">${cards}</div>
+      <div class="tba" style="margin-top:18px"><p>Further participants from the legal academy, government and civil society will be added as they are confirmed.</p><p class="muted">The program and participants are subject to change.</p></div>`;
   }
 
   // ---------- router: in-page links switch views here, without leaving the page ----------
@@ -228,7 +348,7 @@
     const h = route;
     const app = document.getElementById("app");
     let page = "home";
-    if (h === "schedule") { app.innerHTML = schedule(); page = "schedule"; }
+    if (h === "schedule") { app.innerHTML = schedule(); buildGrid(); page = "schedule"; }
     else if (h === "speakers") { app.innerHTML = speakersPage(); page = "speakers"; }
     else if (sessionOf(h)) { app.innerHTML = eventPage(sessionOf(h)); page = "schedule"; }
     else { app.innerHTML = home(); }
